@@ -8,11 +8,13 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class WorkflowTemplateEntyId implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+		
 	@Column(name="WKFLW_KEY")
 	private String key;
-	@Column(name="WKFLW_NAME")
+	@Column(name="ENTITY_NAME")
 	private String name;
-	@Column(name="WKFLW_VAL")
+	@Column(name="ENTITY_VAL")
 	private String value;
 	
 	public WorkflowTemplateEntyId() {

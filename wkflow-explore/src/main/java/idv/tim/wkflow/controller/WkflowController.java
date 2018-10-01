@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import idv.tim.wkflow.designer.BpmnGenerator;
-import idv.tim.wkflow.designer.WorkflowGenerator;
+
+import idv.tim.wkflow.model.WorkflowCreateResult;
 import idv.tim.wkflow.model.WorkflowDefinition;
+import idv.tim.wkflow.services.WorkflowDataService;
 
 @RestController
 @RequestMapping(value="/restapi")
@@ -23,15 +24,15 @@ public class WkflowController {
 	private static final Logger logger = LoggerFactory.getLogger(WkflowController.class);
 	
 	@Autowired
-	private WorkflowGenerator theWorkflowGenerator;
+	private WorkflowDataService theWorkflowDataService;
 	
 	@RequestMapping(value = "/workflow", method = RequestMethod.POST)
-	public String createWorkflow(@RequestBody WorkflowDefinition workflowDef, Locale locale,Model model) {
+	public WorkflowCreateResult createWorkflow(@RequestBody WorkflowDefinition workflowDef, Locale locale,Model model) {
 		logger.info("createWorkflow start");
 		logger.info(workflowDef.getTemplateData().getWorkflowKey());
-		theWorkflowGenerator.generateWorkflow(workflowDef);
+		WorkflowCreateResult theResult = theWorkflowDataService.createWorkflowDefinitionData(workflowDef);
 		logger.info("createWorkflow end");
-		return "success";
+		return theResult;
 	}
 	
 

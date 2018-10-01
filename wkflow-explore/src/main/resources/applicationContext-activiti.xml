@@ -25,6 +25,8 @@
 		<property name="databaseSchemaUpdate" value="true" />
 		<!--<property name="deploymentResources" value="classpath*:bookorder1.bpmn" />-->
 		<property name="jobExecutorActivate" value="false" />
+		<property name="asyncExecutorEnabled" value="true" />
+		<property name="asyncExecutorActivate" value="true" />
 		<property name="history" value="full" />
 		
 	</bean>

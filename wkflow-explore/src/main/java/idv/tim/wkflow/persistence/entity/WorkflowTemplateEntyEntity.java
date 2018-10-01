@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Table(name="WKFLW_TEMP_ENTY")
 @Entity
 public class WorkflowTemplateEntyEntity {
-	private static final long serialVersionUID = 1L;
+	
 	@EmbeddedId
 	private WorkflowTemplateEntyId id;
 	
@@ -22,6 +22,19 @@ public class WorkflowTemplateEntyEntity {
 	private String claimUser;
 	@Column(name="CLAIM_TIME")
 	private Timestamp claimTime;
+		
+	public WorkflowTemplateEntyEntity() {
+	}
+
+	public WorkflowTemplateEntyEntity(WorkflowTemplateEntyId id, String entityDescription, String entityMemo,
+			String claimUser, Timestamp claimTime) {
+		super();
+		this.id = id;
+		this.entityDescription = entityDescription;
+		this.entityMemo = entityMemo;
+		this.claimUser = claimUser;
+		this.claimTime = claimTime;
+	}
 	
 	public WorkflowTemplateEntyId getId() {
 		return id;
@@ -53,7 +66,4 @@ public class WorkflowTemplateEntyEntity {
 	public void setClaimTime(Timestamp claimTime) {
 		this.claimTime = claimTime;
 	}
-	
-	
-
 }

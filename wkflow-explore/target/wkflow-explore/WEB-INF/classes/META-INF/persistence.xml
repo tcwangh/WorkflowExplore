@@ -7,7 +7,7 @@
 		<!-- list all static woven entities here, otherwise the are not statically 
 			woven by maven plugin -->
 		<class>idv.tim.wkflow.persistence.entity.WorkflowTemplateEntity</class>
-		
+		<class>idv.tim.wkflow.persistence.entity.WorkflowTemplateEntyEntity</class>
 		<!-- needs to be set to false, other settings are ignored -->
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 

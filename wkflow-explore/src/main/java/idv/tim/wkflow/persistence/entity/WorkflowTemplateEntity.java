@@ -1,18 +1,16 @@
 package idv.tim.wkflow.persistence.entity;
 
 import java.sql.Timestamp;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Table(name="WKFLW_TEMP")
 @Entity
 public class WorkflowTemplateEntity {
 	private static final long serialVersionUID = 1L;
+	 
 	@Id
 	@Column(name="WKFLW_KEY")
 	private String key;
@@ -50,9 +48,7 @@ public class WorkflowTemplateEntity {
 	@Column(name="ACT_PROC_DEF_FILE_NAME")
 	private String activitiProcessDefinitionFileName;
 	
-	@OneToMany(mappedBy="id.key")
-	private Set<WorkflowTemplateEntyEntity> templateEntities;
-	
+		
 	public WorkflowTemplateEntity() {
 		
 	}
