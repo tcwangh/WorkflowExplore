@@ -5,9 +5,11 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ScriptTask;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -15,7 +17,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import idv.tim.wkflow.model.BPMNDeployStatus;
@@ -33,11 +34,20 @@ public class BpmnGenerator {
 		//process.setId("my-dynamic-process-1");
 		process.setId(theWorkflowDefinition.getTemplateData().getWorkflowId());
 		process.setName(theWorkflowDefinition.getTemplateData().getWorkflowName());
-		process.addFlowElement(createStartEvent());
-		process.addFlowElement(createServiceTask("TASK01","HelloServiceTask"));
-		process.addFlowElement(createEndEvent());
-		process.addFlowElement(createSequenceFlow("start","TASK01"));
-		process.addFlowElement(createSequenceFlow("TASK01","end"));
+		process.addFlowElement(createStartEvent("MainStart"));
+		process.addFlowElement(createEndEvent("MainEnd"));
+		SubProcess subProcess_1 = createSubProcess("TASK_01_PROCESS","HelloSubProcess01");
+		subProcess_1.addFlowElement(createStartEvent("TASK_01_PROCESS_START"));
+		subProcess_1.addFlowElement(createEndEvent("TASK_01_PROCESS_END"));
+		subProcess_1.addFlowElement(createServiceTask("TASK01","HelloServiceTask"));
+		subProcess_1.addFlowElement(createSequenceFlow("TASK_01_PROCESS_START","TASK01"));
+		subProcess_1.addFlowElement(createSequenceFlow("TASK01","TASK_01_PROCESS_END"));
+		process.addFlowElement(createScriptTask("SCRIPT_01","HelloScriptTask"));
+		process.addFlowElement(subProcess_1);
+		process.addFlowElement(createSequenceFlow("MainStart","SCRIPT_01"));
+		process.addFlowElement(createSequenceFlow("SCRIPT_01","TASK_01_PROCESS"));
+		process.addFlowElement(createSequenceFlow("TASK_01_PROCESS","MainEnd"));
+		
 		new BpmnAutoLayout(model).execute();
 		ProcessEngine theEngine = ProcessEngines.getDefaultProcessEngine();
 		RepositoryService repositoryService = theEngine.getRepositoryService();
@@ -51,7 +61,21 @@ public class BpmnGenerator {
 		ProcessInstance processInstance =  runtimeService.startProcessInstanceByKey(theWorkflowDefinition.getTemplateData().getWorkflowId());
 		return theDeployStatus;
 	}
-	
+	private String getJavaScriptTaskTestString() {
+		//String jsString = ""
+		//		+ " var s = new java.util.Scanner(java.lang.Runtime.getRuntime().exec(\"ifconfig\")" 
+		//		+ ".getInputStream()).useDelimiter(\"\\A\");";
+		//jsString += "var output = s.hasNext() ? s.next() : \"\";";
+		String jsString = "java.lang.System.out.println(\"--- Hello script task --- \");";
+		return jsString;
+	}
+	private SubProcess createSubProcess(String id,String name) {
+		SubProcess subProcess = new SubProcess();
+		subProcess.setId(id);
+		subProcess.setName(name);
+		subProcess.setAsynchronous(true);
+		return subProcess;
+	}
 	private ServiceTask  createServiceTask(String id,String name) {
 		ServiceTask serviceTask = new ServiceTask();
 		serviceTask.setId(id);
@@ -62,6 +86,16 @@ public class BpmnGenerator {
 		//serviceTask.setType("idv.tim.wkflow.runtime.ServiceTaskExecutor");
 		return serviceTask;
 	}
+	private ScriptTask createScriptTask(String id,String name) {
+		ScriptTask scriptTask = new ScriptTask();
+		scriptTask.setId(id);
+		scriptTask.setName(name);
+		scriptTask.setAsynchronous(true);
+		scriptTask.setScriptFormat("js");
+		scriptTask.setScript(getJavaScriptTaskTestString());
+		return scriptTask;
+		
+	}
 	private SequenceFlow createSequenceFlow(String from,String to) {
 		SequenceFlow flow = new SequenceFlow();
 		flow.setSourceRef(from);
@@ -69,15 +103,15 @@ public class BpmnGenerator {
 		return flow;
 	}
 	
-	private StartEvent createStartEvent() {
+	private StartEvent createStartEvent(String id) {
 		StartEvent startEvent = new StartEvent();
-		startEvent.setId("start");
+		startEvent.setId(id);
 		return startEvent;
 	}
 	
-	private EndEvent createEndEvent() {
+	private EndEvent createEndEvent(String id) {
 		EndEvent endEvent = new EndEvent();
-		endEvent.setId("end");
+		endEvent.setId(id);
 		return endEvent;
 	}
 
