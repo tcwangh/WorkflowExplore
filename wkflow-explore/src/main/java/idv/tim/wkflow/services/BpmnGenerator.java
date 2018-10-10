@@ -56,9 +56,9 @@ public class BpmnGenerator {
 				.addBpmnModel(theWorkflowDefinition.getTemplateData().getWorkflowActivitiDefFileName(), model).deploy().getId();
 		logger.info("Deployment id " + deploymentId);
 		theDeployStatus.setDeploymentId(deploymentId);
-		RuntimeService runtimeService = theEngine.getRuntimeService();
+		//RuntimeService runtimeService = theEngine.getRuntimeService();
 		//ProcessInstance processInstance =  runtimeService.startProcessInstanceByKey("my-dynamic-process-1");
-		ProcessInstance processInstance =  runtimeService.startProcessInstanceByKey(theWorkflowDefinition.getTemplateData().getWorkflowId());
+		//ProcessInstance processInstance =  runtimeService.startProcessInstanceByKey(theWorkflowDefinition.getTemplateData().getWorkflowId());
 		return theDeployStatus;
 	}
 	private String getJavaScriptTaskTestString() {

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import idv.tim.wkflow.model.InstanceCreateResult;
 import idv.tim.wkflow.model.WorkflowCreateResult;
 import idv.tim.wkflow.model.WorkflowDefinition;
 import idv.tim.wkflow.services.WorkflowDataService;
@@ -31,6 +32,8 @@ public class WkflowController {
 		logger.info("createWorkflow start");
 		logger.info(workflowDef.getTemplateData().getWorkflowKey());
 		WorkflowCreateResult theResult = theWorkflowDataService.createWorkflowDefinitionData(workflowDef);
+		InstanceCreateResult instanceResult = theWorkflowDataService.createWorkflowInstance(workflowDef.getTemplateData().getWorkflowId(), workflowDef.getInputValues());
+		theResult.setInstanceCreationResult(instanceResult);
 		logger.info("createWorkflow end");
 		return theResult;
 	}

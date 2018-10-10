@@ -6,6 +6,7 @@ public class WorkflowDefinition {
 	
 	private TemplateData templateData;
 	private ArrayList<WorkflowInputVariable> inputVariables;
+	private ArrayList<WorkflowInputValues> inputValues;
 
 	public TemplateData getTemplateData() {
 		return templateData;
@@ -22,4 +23,13 @@ public class WorkflowDefinition {
 	public void setInputVariables(ArrayList<WorkflowInputVariable> inputVariables) {
 		this.inputVariables = inputVariables;
 	}
+
+	public ArrayList<WorkflowInputValues> getInputValues() {
+		return inputValues;
+	}
+
+	public void setInputValues(ArrayList<WorkflowInputValues> inputValues) {
+		this.inputValues = inputValues;
+	}
+	
 }

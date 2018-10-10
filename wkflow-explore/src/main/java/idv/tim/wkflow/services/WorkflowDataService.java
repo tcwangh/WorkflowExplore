@@ -2,7 +2,14 @@ package idv.tim.wkflow.services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import idv.tim.wkflow.model.BPMNDeployStatus;
+import idv.tim.wkflow.model.InstanceCreateResult;
 import idv.tim.wkflow.model.WorkflowCreateResult;
 import idv.tim.wkflow.model.WorkflowDefinition;
+import idv.tim.wkflow.model.WorkflowInputValues;
 import idv.tim.wkflow.persistence.WorkflowTemplateEntyRepository;
 import idv.tim.wkflow.persistence.WorkflowTemplateRepository;
 import idv.tim.wkflow.persistence.entity.WorkflowTemplateEntity;
@@ -80,6 +89,23 @@ public class WorkflowDataService {
 		BPMNDeployStatus bpmnDeployStatus = bpmnGenerator.createDynamicProcess(theWorkflowDefinition);
 		theCreateResult.setBpmnDeployStatus(bpmnDeployStatus);
 		return theCreateResult;
+	}
+	
+	public InstanceCreateResult createWorkflowInstance(String workflowId,ArrayList<WorkflowInputValues> inputValues) {
+		InstanceCreateResult result = new InstanceCreateResult();
+		Map<String, Object> variableMap = new HashMap<String, Object>();
+		
+		for (int i=0;i<inputValues.size();i++) {
+			logger.debug("[InputValues][" + i + "][" + inputValues.get(i).getName() + 
+					"][" + inputValues.get(i).getType()  +
+					"][" + inputValues.get(i).getValue() + "]");
+			variableMap.put(inputValues.get(i).getName(), inputValues.get(i).getValue());
+		}
+		ProcessEngine theEngine = ProcessEngines.getDefaultProcessEngine();
+		RuntimeService runtimeService = theEngine.getRuntimeService();
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(workflowId, variableMap);
+		result.setInstanceId(processInstance.getProcessInstanceId());
+		return result;
 	}
 
 }
