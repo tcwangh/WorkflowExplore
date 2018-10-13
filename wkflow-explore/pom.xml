@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>idv.tim</groupId>
 	<artifactId>wkflow</artifactId>
-	<name>wkflow-explore</name>
+	<name>wkflow-rest</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
@@ -166,7 +166,7 @@
 		</dependency>        
 	</dependencies>
     <build>
-    	<finalName>wkflow-explore</finalName>
+    	<finalName>wkflow-rest</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>

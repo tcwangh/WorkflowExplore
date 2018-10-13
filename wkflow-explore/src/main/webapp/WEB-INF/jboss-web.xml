@@ -1,3 +1,3 @@
 <jboss-web>
-    <context-root>/wkflow-explore</context-root>
+    <context-root>/wkflow-rest</context-root>
 </jboss-web>
