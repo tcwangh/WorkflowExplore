@@ -36,4 +36,16 @@ public class HomeController {
 		model.addAttribute("engineDB", theEngine.getProcessEngineConfiguration().getDatabaseType() );
 		return "home";
 	}
+	@RequestMapping(value = "/designer", method = RequestMethod.GET)
+	public String designerPage(Locale locale, Model model) {
+		logger.info("Welcome designer Page! The client locale is {}.", locale);
+		Date date = new Date();
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		String formattedDate = dateFormat.format(date);
+		ProcessEngine theEngine = ProcessEngines.getDefaultProcessEngine();
+		model.addAttribute("serverTime", formattedDate );
+		model.addAttribute("engineName", theEngine.getName());
+		model.addAttribute("engineDB", theEngine.getProcessEngineConfiguration().getDatabaseType() );
+		return "designer";
+	}
 }

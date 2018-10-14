@@ -1,0 +1,23 @@
+@CHARSET "BIG5";
+
+.pull-right {
+	float:right !important;
+}
+
+.pull-left {
+	float:left !important;
+}
+
+.blue-bg {
+	/*background-color:#000;*/
+	background-color:#30A9DE;
+	color:#fff;
+}
+
+.blue-bg a {
+	color:#fff;
+}
+
+.blue-bg a:hover {
+	color:rgba(255,255,255,.6);
+}

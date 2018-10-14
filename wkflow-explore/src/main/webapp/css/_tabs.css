@@ -1,0 +1,116 @@
+@CHARSET "BIG5";
+
+.tabContainer {
+	height:100%;
+}
+.tabControls {
+	margin: 1px;
+    background-color: rgb(127,127,127);
+    height:25px;
+    padding-left:10px;
+    overflow: auto;
+}
+
+.tabControls li{
+	display: inline-flex;
+	word-wrap:break-word;
+	margin-right: 3px;
+	margin-top:2.5px;
+	border-radius: 5px 5px 0 0;
+	background:#333;
+	height:22px; /*fix below white line between ul and following div*/
+}
+.tabControls li a {
+	display:block;
+	padding: 2px 8px 2px 8px;
+	/*background:#333;*/
+	/*color:#fff;*/
+	color:inherit;
+	border-radius: 5px 5px 0 0;
+	font-size: 12px;
+}
+
+/*
+.tabControls li.current a, .tabControls li a:hover {
+	color:#333;
+	background:#f0f0f0;
+}
+*/
+.tabControls li.current, .tabControls li:hover {
+	color:#333;
+	background:#f0f0f0;
+}
+.tabContentsContainer {
+	top:0;
+	left:0;
+	width:inherit;
+	white-space: pre;
+	font-family: monospace;
+	font-size: 13px;
+	height: calc(100% - 25px);
+	background-color:#efe7e7;
+}
+.tab_content {
+	height:100%;
+}
+.closeTabIcon {
+	width:20px;
+	height:20px;
+}
+
+.tabControls_below {
+	margin: 1px;
+    background-color: rgb(127,127,127);
+    height:20px;
+    padding-left:10px;
+}
+.tabControls_below li{
+	display: inline-flex;
+	word-wrap:break-word;
+	margin-right: 3px;
+	/*border-radius: 5px 5px 0 0;*/
+	background:#333;
+	height:18px; /*fix below white line between ul and following div*/
+	width:70px;
+}
+.tabControls_below li a {
+	display:block;
+	/*padding: 2px 8px 2px 8px;*/
+	/*background:#333;*/
+	/*color:#fff;*/
+	color:inherit;
+	border-radius: 0 0 5px 5px;
+	font-size: 12px;
+}
+.textCenter_3 {
+	margin-left: 20px;
+}
+.textCenter_4 {
+	margin-left: 18px;
+}
+.textCenter_Default {
+	margin-left: 10px;
+}
+.tabControls_below li.current {
+	color:#333;
+	background:#f0f0f0;
+	border-color: white blue blue blue;
+	border-width: 0px 1px 1px 1px;
+	border-style:solid;
+	border-radius: 0 0 5px 5px;
+	
+}
+.tabControls_below li:hover {
+	color:#333;
+	background:#f0f0f0;
+}
+.tabContentsContainer_below {
+	top:0;
+	left:0;
+	width:inherit;
+	white-space: pre;
+	font-family: monospace;
+	font-size: 13px;
+	height: calc(100% - 20px);
+	background-color:#efe7e7;
+}

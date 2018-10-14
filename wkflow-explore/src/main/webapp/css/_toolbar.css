@@ -1,0 +1,22 @@
+@CHARSET "BIG5";
+
+.imgIcon{
+	width:30px;
+	height:30px;
+}
+.icon_table {
+	border-collapse:collapse;
+	border:none;
+}
+.funcIcon{
+	border:none;
+}
+.funcIcon:hover{
+	border-top:1px solid #FFFFFF;
+	border-left:1px solid #FFFFFF;
+	border-right:1px solid #CECECE;
+	border-bottom:1px solid #CECECE;
+	border-radius:4px;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E7EDF1), color-stop(1, #BACBD5));
+    background-image: -webkit-linear-gradient(top, #E7EDF1 0%, #BACBD5 100%);
+}
