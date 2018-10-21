@@ -50,6 +50,7 @@ function appStart() {
 					padding:tabContentPaddingSize,
 					borderWidth:1,
 					triggerTabCreateAfterEvent:'true',
+					triggerTabChangeEvent:'true',
 					contentsContainerClass:'tabContentsContainer'
 				});
 				$('#tabContainer').bind('ccwtab.TabCreateComplete',function(e,data){
@@ -57,6 +58,9 @@ function appStart() {
 				});
 				$('#tabContainer').bind('ccwtab.TabDeleteComplete',function(e,data){
 					_theAppContext.tabDeleteDone(e,data);
+				});
+				$('#tabContainer').bind('ccwtab.TabChangeComplete',function(e,data){
+					_theAppContext.tabChangeDone(e,data);
 				});
 			},
 			initInnerDesignTabSection : function(parentDivId,theNewTabId) {
@@ -76,6 +80,7 @@ function appStart() {
 					padding:5,
 					borderWidth:1,
 					triggerTabCreateAfterEvent:'false',
+					triggerTabChangeEvent:'false',
 					contentsContainerClass:'tabContentsContainer_below'
 				});
 				var flowTab = theNewTabId+"_FLOW";
@@ -84,6 +89,7 @@ function appStart() {
 					displayName:'Design',
 					closeTab:'disabled'
 				});
+				console.debug("FlowTabId is " + flowTab);
 				var bpmnTab=theNewTabId+"_BPMN";
 				$('#' + designTabSectionId).ccwtab('addtab',{
 					newTabId:bpmnTab,
@@ -95,6 +101,19 @@ function appStart() {
 					newTabId:sqlTab,
 					displayName:'SQL',
 					closeTab:'disabled'
+				});
+				var dsgAreaId = theNewTabId + "_DesignArea";
+				var dsgAreaLeftDivId = theNewTabId + "_DesignLeft"
+				var dsgAreaRightDivId = theNewTabId + "_DesignRight"
+				var dsgTabDivId= "tab_" + flowTab;
+				var dsgSectionId = 	"<section id='" + dsgAreaId + "' class='designAreaContainer' >" + 
+										"<div id='" + dsgAreaLeftDivId + "' class='designAreaLeft' ></div>" +
+										"<div id='" + dsgAreaRightDivId + "' class='designAreaRight' ></div>" + 
+									"</section>";
+				$('#' + dsgTabDivId).append(dsgSectionId);
+				$('#' + dsgAreaId).wkflowdsg('init',{
+					configDivId:dsgAreaLeftDivId,
+					displayDivId:dsgAreaRightDivId
 				});
 				
 			},
@@ -122,6 +141,11 @@ function appStart() {
 				console.debug(e);
 				console.debug(data);
 				console.debug("Tab Deleted-Div Name: " + data.removedTabId + ";" +  data.removedTabDivName);
+			},
+			tabChangeDone : function (e,data) {
+				console.debug(e);
+				console.debug(data);
+				console.debug("Activate Tab Id: " + data.activateTabId + "; Previous Tab id" +  data.previousTabid);
 			},
 			getDisplayInfo : function() {
 				var displayInfo = {

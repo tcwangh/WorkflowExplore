@@ -20,6 +20,7 @@
 				//console.debug($(this).get(0).id);
 				$(this).attr('tabGroup',$(this).get(0).id);
 				$(this).attr('tabCreateDoneEvent',options.triggerTabCreateAfterEvent);
+				$(this).attr('tabChangeEvent',options.triggerTabChangeEvent);
 				//console.debug($(this).find('.tabContentsContainer'));
 				//$(this).find('.tabContentsContainer').first().attr('tabGroup',$(this).get(0).id);
 				console.debug($(this).find('.' + options.contentsContainerClass));
@@ -101,13 +102,20 @@
 						e.preventDefault();
 					}
 					var currentTabIdx=$(this).closest('ul').find("li[class='current']").index();
+					var thePreviousTabId = $(this).closest('ul').find("li[class='current']").children('a').eq(0).attr('id'); //20181020
 					var theTabGroup = $(this).attr('tabGroup');
 					var theTabContentContainerClass = $(this).closest('ul').attr('contentContainerClass');
 					console.debug("tabGroup[" + theTabGroup + "]-index[" + currentTabIdx + "] a on click");
 					var newClickTabIdx = $(this).index();
+					var theActivateTabId=$(this).children('a').eq(0).attr('id'); //20181020
 					if (newClickTabIdx != currentTabIdx && !_p.isAnimate) {
 						hideTabContent(currentTabIdx,theTabGroup,theTabContentContainerClass);
 						showTabContent(newClickTabIdx,theTabGroup,theTabContentContainerClass);
+						var tabSourceSectionDivId = '#' + theTabGroup; //20181020
+						var bTriggerTabChangeEvent = $(tabSourceSectionDivId).attr('tabChangeEvent'); //20181020
+						if (bTriggerTabChangeEvent == 'true') { //20181020
+							$(tabSourceSectionDivId).trigger(ccwtab_defaults.tabChangeEvent,[{activateTabId:theActivateTabId,previousTabid:thePreviousTabId}]); //20181020
+						}
 					}
 				});
 				if (options.closeTab!=undefined && options.closeTab == 'enabled') {

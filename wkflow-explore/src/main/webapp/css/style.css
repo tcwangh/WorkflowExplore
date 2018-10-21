@@ -7,7 +7,7 @@
 @import url(_helper.css);
 @import url(_toolbar.css);
 @import url(_tabs.css);
-
+@import url(_dsgner.css);
 .site-header {
 	/*background-color:#30A9DE;*/
 	width:100%;
@@ -122,4 +122,18 @@
 }
 .sidebar{
 	background-color:#dbde30;
+}
+.designAreaContainer {
+	height:100%;
+	width:100%;
+	padding: 2px;
+}
+.designAreaLeft {
+	width:70%;
+	float:left;
+	height:100%;
+	background-color: burlywood;
+}
+.designAreaRight {
+	height:100%;
 }
