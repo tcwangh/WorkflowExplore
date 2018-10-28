@@ -132,7 +132,8 @@
 	width:70%;
 	float:left;
 	height:100%;
-	background-color: burlywood;
+	background-color: antiquewhite;
+	overflow: scroll;
 }
 .designAreaRight {
 	height:100%;

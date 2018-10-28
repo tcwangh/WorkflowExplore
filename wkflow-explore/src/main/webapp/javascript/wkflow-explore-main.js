@@ -90,6 +90,7 @@ function appStart() {
 					closeTab:'disabled'
 				});
 				console.debug("FlowTabId is " + flowTab);
+				/*
 				var bpmnTab=theNewTabId+"_BPMN";
 				$('#' + designTabSectionId).ccwtab('addtab',{
 					newTabId:bpmnTab,
@@ -102,6 +103,7 @@ function appStart() {
 					displayName:'SQL',
 					closeTab:'disabled'
 				});
+				*/
 				var dsgAreaId = theNewTabId + "_DesignArea";
 				var dsgAreaLeftDivId = theNewTabId + "_DesignLeft"
 				var dsgAreaRightDivId = theNewTabId + "_DesignRight"
