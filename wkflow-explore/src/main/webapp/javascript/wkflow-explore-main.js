@@ -115,7 +115,8 @@ function appStart() {
 				$('#' + dsgTabDivId).append(dsgSectionId);
 				$('#' + dsgAreaId).wkflowdsg('init',{
 					configDivId:dsgAreaLeftDivId,
-					displayDivId:dsgAreaRightDivId
+					displayDivId:dsgAreaRightDivId,
+					wkflowId:theNewTabId
 				});
 				
 			},

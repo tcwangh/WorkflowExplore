@@ -6,7 +6,7 @@
 .tabControls {
 	margin: 1px;
     background-color: rgb(127,127,127);
-    height:25px;
+    /*height:25px;*/
     padding-left:10px;
     overflow: auto;
 }
@@ -114,3 +114,4 @@
 	height: calc(100% - 20px);
 	background-color:#efe7e7;
 }
+

@@ -85,6 +85,41 @@
 									"</div>";
 					$(newTask).insertAfter(parentMainprocDiv);
 				});
+				var wkflowInfoDiv = options.wkflowId + "designAreaRightTop";
+				var otherInfoDiv =  options.wkflowId + "designAreaRightDown";
+				var  displayArea = 	"<div id='" + wkflowInfoDiv + "' class='designAreaRightTop' ></div>" +
+									"<div id='" + otherInfoDiv + "' class='designAreaRightDown' ></div>";
+				$(this).find("div[id='" + options.displayDivId + "']").append(displayArea);
+				
+				var theNewTabId =options.wkflowId;
+				var designAreaRightTopTabSectionId = 'dsgRTContainer_'+theNewTabId;
+				var designAreaRightTopTabUlId = 'dsgRT_controls_'+ theNewTabId;
+				var designAreaRightTopTabContainerId = 'dsgRT_container_' + theNewTabId;
+				var dispTabs = 
+					"<section id='" + designAreaRightTopTabSectionId + "' class='tabContainer'>" + 
+						"<ul id='" + designAreaRightTopTabUlId + "' class='tabControls'>" + 
+						"</ul>" +
+						"<div id='" + designAreaRightTopTabContainerId + "' class='tabContentsContainer'>" +
+						"</div>"
+					"</section>";
+				$('#' + wkflowInfoDiv).append(dispTabs);
+				var tabContentPaddingSize = 5;
+				
+				$('#'+designAreaRightTopTabSectionId).ccwtab('init',{
+					padding:tabContentPaddingSize,
+					borderWidth:1,
+					triggerTabCreateAfterEvent:'false',
+					triggerTabChangeEvent:'false',
+					contentsContainerClass:'tabContentsContainer'
+				});
+				
+				var wkflowInfoTab = theNewTabId+"_WKFLOWINFO";
+				$('#' + designAreaRightTopTabSectionId).ccwtab('addtab',{
+					newTabId:wkflowInfoTab,
+					displayName:'Workflow Data',
+					closeTab:'disabled'
+				});
+				
 			}
 	
 			
