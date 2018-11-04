@@ -119,9 +119,32 @@
 					displayName:'Workflow Data',
 					closeTab:'disabled'
 				});
+				//The workflow-info container div is tab_{wkflowInfoTab}
+				//append ztree div to workflow-info container
+				var wkflowInfoContainerDivId = "tab_"+ wkflowInfoTab;
+				var wkflowInfoZtreeDivId = "ztree_" + wkflowInfoTab;
+				var ztreeDiv = "<div id='" + wkflowInfoZtreeDivId + "' class='ztree'></div>";
+				$('#' + wkflowInfoContainerDivId).append(ztreeDiv);
+				zTreeNodes = [
+			      	{"name":"模版資訊", open:true, iconOpen:"css/zTreeStyle/img/diy/1_open.png", iconClose:"css/zTreeStyle/img/diy/1_close.png",children: [
+			      	{ "name":"編號" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"名稱" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"類別" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"理由" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"說明" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"責任部門" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"權限代碼" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"檢查碼" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"啟用" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"狀態" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"申請人" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"申請時間" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]}
+			      	]}];
+				var setting = {};
+				var zTreeObj;
+				zTreeObj=  $.fn.zTree.init($("#" + wkflowInfoZtreeDivId), setting, zTreeNodes);
 				
 			}
-	
 			
 	}
 	
