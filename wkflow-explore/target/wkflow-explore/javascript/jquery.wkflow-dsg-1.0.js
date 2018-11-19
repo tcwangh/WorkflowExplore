@@ -6,7 +6,7 @@
 	
 	var wkflowdsg_defaults = {
 			addTaskEventBinder:'.addTaskIcon',
-			tabEventAction:'click',
+			wkflowInfoChangeReqEvent:'wkflowdsg.wkflowInfoChangeReq',
 			currentSelector:'current',
 			tabCreatDoneEvent:'ccwtab.TabCreateComplete',
 			tabDeleteDoneEvent:'ccwtab.TabDeleteComplete',
@@ -16,7 +16,6 @@
 	};
 	
 	var wkflowdsg_methods = {
-			
 			
 			init: function(options) {
 				var defaults=wkflowdsg_defaults;
@@ -123,11 +122,11 @@
 				//append ztree div to workflow-info container
 				var wkflowInfoContainerDivId = "tab_"+ wkflowInfoTab;
 				var wkflowInfoZtreeDivId = "ztree_" + wkflowInfoTab;
-				var ztreeDiv = "<div id='" + wkflowInfoZtreeDivId + "' class='ztree'></div>";
+				var ztreeDiv = "<div id='" + wkflowInfoZtreeDivId + "' class='ztree' dsgarea='" + options.dsgAreaId + "'></div>";
 				$('#' + wkflowInfoContainerDivId).append(ztreeDiv);
 				zTreeNodes = [
 			      	{"name":"模版資訊", open:true, iconOpen:"css/zTreeStyle/img/diy/1_open.png", iconClose:"css/zTreeStyle/img/diy/1_close.png",children: [
-			      	{ "name":"編號" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
+			      	{ "name":"編號" + "-" , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
 			      	{ "name":"名稱" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
 			      	{ "name":"類別" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
 			      	{ "name":"理由" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
@@ -140,10 +139,26 @@
 			      	{ "name":"申請人" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
 			      	{ "name":"申請時間" + "-"  , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]}
 			      	]}];
-				var setting = {};
+				
+				var setting = {
+						callback: {
+							onDblClick: myOnDblClick
+						}
+				};
 				var zTreeObj;
 				zTreeObj=  $.fn.zTree.init($("#" + wkflowInfoZtreeDivId), setting, zTreeNodes);
 				
+				
+				function myOnDblClick(event, treeId, treeNode) {
+					//console.debug($(this));
+					
+					var dsgSourceDivId= $('#'+treeNode.tId).closest('div').attr('dsgarea');
+					console.debug(dsgSourceDivId);
+					//alert(treeNode ? treeNode.tId + ", " + treeNode.name : "isRoot");
+					
+					$('#' + dsgSourceDivId).trigger(wkflowdsg_defaults.wkflowInfoChangeReqEvent,[{treeNodeName:treeNode.name}]);
+				
+				}
 			}
 			
 	}

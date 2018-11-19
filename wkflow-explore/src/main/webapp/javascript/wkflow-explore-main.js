@@ -116,7 +116,14 @@ function appStart() {
 				$('#' + dsgAreaId).wkflowdsg('init',{
 					configDivId:dsgAreaLeftDivId,
 					displayDivId:dsgAreaRightDivId,
-					wkflowId:theNewTabId
+					wkflowId:theNewTabId,
+					dsgAreaId:dsgAreaId
+				});
+				$('#' + dsgAreaId).bind('wkflowdsg.wkflowInfoChangeReq',function(e,data){
+					console.debug("ChangeWorkflowInfoRequest");
+					console.debug(e);
+					console.debug(data);
+					//_theAppContext.tabChangeDone(e,data);
 				});
 				
 			},
