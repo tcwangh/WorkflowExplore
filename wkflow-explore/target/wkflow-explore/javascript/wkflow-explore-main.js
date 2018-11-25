@@ -124,6 +124,7 @@ function appStart() {
 					console.debug(e);
 					console.debug(data);
 					//_theAppContext.tabChangeDone(e,data);
+					_theAppContext.showWorkflowInfoModifyForm(data);
 				});
 				
 			},
@@ -175,6 +176,33 @@ function appStart() {
 			},
 			closeTabEventHandler : function () {
 				console.debug("tab closed");
+			},
+			showWorkflowInfoModifyForm : function (data) {
+				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
+				var inputSrc = 	"<table class='form_table'>" +
+							   		"<tr>" +
+										"<td><label id='lbl_wkflwKey'>Workflow Key</label></td>" + 
+				                    	"<td><input id='input_wkflwKey' type='text' disabled value='" + data.wkflw_key + "'></td>" +
+				                    "</tr>" +
+				                    "<tr>" +
+				                    	"<td><label id='lbl_wkflwId'>Workflow ID</label></td>" + 
+				                    	"<td><input id='input_wkflwId' type='text' placeholder'workflow Id'></td>" +
+				                    "</tr>" +
+				                    "<tr>" +
+			                    		"<td><label id='lbl_wkflwId'>Workflow Name</label></td>" + 
+			                    		"<td><input id='input_wkflwName' type='text' placeholder'workflow name'></td>" +
+			                    	"</tr>" +
+			                    "</table>";
+				
+				
+				
+				$('body').append(wkflwInfoModifyDialog);
+				$('#wkflwInfoDialog').ccwform('init',{
+					inputSrc:inputSrc,
+					dialogHeader:"設定樣板資訊"
+				});
+				
+				
 			}
 	}
 	return theAppObj.init();

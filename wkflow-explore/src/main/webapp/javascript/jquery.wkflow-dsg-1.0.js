@@ -122,10 +122,11 @@
 				//append ztree div to workflow-info container
 				var wkflowInfoContainerDivId = "tab_"+ wkflowInfoTab;
 				var wkflowInfoZtreeDivId = "ztree_" + wkflowInfoTab;
-				var ztreeDiv = "<div id='" + wkflowInfoZtreeDivId + "' class='ztree' dsgarea='" + options.dsgAreaId + "'></div>";
+				var ztreeDiv = "<div id='" + wkflowInfoZtreeDivId + "' class='ztree' dsgarea='" + options.dsgAreaId + "' wkflw_key='" + options.wkflowId + "'></div>";
 				$('#' + wkflowInfoContainerDivId).append(ztreeDiv);
 				zTreeNodes = [
 			      	{"name":"模版資訊", open:true, iconOpen:"css/zTreeStyle/img/diy/1_open.png", iconClose:"css/zTreeStyle/img/diy/1_close.png",children: [
+			      	{ "name":"識別碼" + "-"+ options.wkflowId , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
 			      	{ "name":"編號" + "-" , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
 			      	{ "name":"名稱" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
 			      	{ "name":"類別" + "-" , open:false,children:[{"name":"",icon:"css/zTreeStyle/img/diy/9.png"}]},
@@ -153,10 +154,11 @@
 					//console.debug($(this));
 					
 					var dsgSourceDivId= $('#'+treeNode.tId).closest('div').attr('dsgarea');
+					var dsgWorkflowKey= $('#'+treeNode.tId).closest('div').attr('wkflw_key');
 					console.debug(dsgSourceDivId);
 					//alert(treeNode ? treeNode.tId + ", " + treeNode.name : "isRoot");
 					
-					$('#' + dsgSourceDivId).trigger(wkflowdsg_defaults.wkflowInfoChangeReqEvent,[{treeNodeName:treeNode.name}]);
+					$('#' + dsgSourceDivId).trigger(wkflowdsg_defaults.wkflowInfoChangeReqEvent,[{treeNodeName:treeNode.name,wkflw_key:dsgWorkflowKey}]);
 				
 				}
 			}

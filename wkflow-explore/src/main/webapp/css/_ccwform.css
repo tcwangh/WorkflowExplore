@@ -1,0 +1,44 @@
+@charset "BIG5";
+
+#mdOverlay{
+	top:0;
+	left:0;
+	width:100%;
+	position:fixed;
+	z-index:97;
+	background:#000;
+	display:none;
+}
+
+#mdWindow{
+	margin-top:-200px;
+	margin-left:-250px;
+	top:50%;
+	left:50%;
+	width:500px;
+	height:400px;
+	position:fixed;
+	z-index:98;
+	background:#fff;
+	display:none;
+}
+#mdHeader {
+	
+}
+#mdTitle {
+	
+}
+#mdClose {
+	
+}
+#modelInclude {
+	display:none;
+}
+
+#contWrap {
+	
+}
+.form_table {
+	width:100%;
+	padding:10px;
+}
