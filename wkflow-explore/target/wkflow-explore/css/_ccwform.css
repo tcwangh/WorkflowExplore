@@ -23,20 +23,41 @@
 	display:none;
 }
 #mdHeader {
-	
+	display:inline-block;
+	background-color:cornflowerblue;
+	padding:5px;
+	color:white;
+	width:100%;
 }
 #mdTitle {
 	
+	float:left;
 }
 #mdClose {
-	
+	float:right;
 }
 #modelInclude {
 	display:none;
 }
-
+#mdFooter {
+	float:right;
+	padding:10px;
+}
+.button {
+	color:#3E3E3E;
+	font-weight:300;
+	background-color:#E2E1E2;
+	padding:4px 10px;
+	display:inline-block;
+	border:none;
+}
+.button:hover{
+	color:#3E3E3E;
+	background-color:#eee;
+	cursor:pointer;
+}
 #contWrap {
-	
+	height:77%;
 }
 .form_table {
 	width:100%;

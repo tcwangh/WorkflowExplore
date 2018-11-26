@@ -21,25 +21,34 @@
 				              "		   </div>" +
 				              "    </div>" + 
 				              "    <div id='contWrap'>" +setSource + "</div>" +
-				              "    <div id='mdFooter'></div>"
+				              "    <div id='mdFooter'>" +
+				              "        <input id='mdCancel' class='button' type='Submit' value='Cancel'>" +
+				              "        <input id='mdConfirm' class='button' type='Submit' value='Submit'>" +
+				              "    </div>"
 				              "</div>";
 				$('body').append(theForm);
 				$('#mdOverlay, #mdWindow').css({display:'block',opacity:'0'});
 				$('#mdOverlay').css({height:wdHeight}).stop().
 					animate({opacity:_setting.overlayOpacity},_setting.fadeTime);
 				$('#mdWindow').stop().animate({opacity:'1'},_setting.fadeTime);
-				$(this).find("img[id='mdCloseImg']").on('mouseover',function(e){
+				$('#mdCloseImg').on('mouseover',function(e){
 					$(this).attr("src","images/close-icon-on.png");
 				});
-				$(this).find("img[id='mdCloseImg']").on('mouseleave',function(e){
+				$('#mdCloseImg').on('mouseleave',function(e){
 					$(this).attr("src","images/close-icon.png");
 				});
 				
-				$('.mdClose').on('click',function(){
+				$('#mdCloseImg').on('click',function(){
 					$('#mdWindow, #mdOverlay').stop().animate({opacity:'0'},_setting.fadeTime,function(){
 						$('#mdWindow, #mdOverlay').remove();
 					});
 				});
+				$('#mdConfirm').on('click',function(){
+			        console.debug("confirm click");
+			    });
+				$('#mdCancel').on('click',function(){
+			        console.debug("cancel click");
+			    });
 				
 			}
 	}
