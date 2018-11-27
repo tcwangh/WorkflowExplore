@@ -194,14 +194,15 @@ function appStart() {
 			                    	"</tr>" +
 			                    "</table>";
 				
-				
-				
 				$('body').append(wkflwInfoModifyDialog);
-				$('#wkflwInfoDialog').ccwform('init',{
+				$('#modelInclude').ccwform('init',{
 					inputSrc:inputSrc,
-					dialogHeader:"設定樣板資訊"
+					dialogHeader:"設定樣板資訊",
+					
 				});
-				
+				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
+					console.debug(data);
+				});
 				
 			}
 	}

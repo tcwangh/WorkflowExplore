@@ -4,7 +4,8 @@
 ;(function(d,$){
 	var ccwform_defaults = {
 			fadeTime:500,
-			overlayOpacity:0.7
+			overlayOpacity:0.7,
+			afterSubmitEvent:'ccwform.afterSubmit',
 	};
 	var ccwform_methods = {
 			init: function(options) {
@@ -12,6 +13,7 @@
 				var _setting = $.extend(defaults,options);
 				var setSource = _setting.inputSrc;
 				var wdHeight=$(window).height();
+				var srcSectionId = $(this).attr('id');
 				var theForm = "<div id='mdOverlay'></div>" +
 				              "<div id='mdWindow'>" + 
 				              "    <div id='mdHeader'>" + 
@@ -22,8 +24,8 @@
 				              "    </div>" + 
 				              "    <div id='contWrap'>" +setSource + "</div>" +
 				              "    <div id='mdFooter'>" +
-				              "        <input id='mdCancel' class='button' type='Submit' value='Cancel'>" +
-				              "        <input id='mdConfirm' class='button' type='Submit' value='Submit'>" +
+				              "        <input id='mdCancel' class='button' srcSec='" + srcSectionId + "' type='Submit' value='Cancel'>" +
+				              "        <input id='mdConfirm' class='button' srcSec='" + srcSectionId + "' type='Submit' value='Submit'>" +
 				              "    </div>"
 				              "</div>";
 				$('body').append(theForm);
@@ -45,11 +47,26 @@
 				});
 				$('#mdConfirm').on('click',function(){
 			        console.debug("confirm click");
+			        //console.debug($('#contWrap').find('input'));
+			        var srcSectionId = $(this).attr('srcSec');
+			        var inputList = $('#contWrap').find('input');
+			        var inputData = {};
+			        for(var i = 0; i < inputList.length; i++) {
+			        	//console.log("loop["+ i+ "]", inputList[i].id + "-"+ inputList[i].value)
+			        	inputData[inputList[i].id]=inputList[i].value;
+			        }
+			        $('#' + srcSectionId).trigger(ccwform_defaults.afterSubmitEvent,[{dialogInputData:inputData}]);
+			        closeDialog();
 			    });
 				$('#mdCancel').on('click',function(){
 			        console.debug("cancel click");
+			        closeDialog();
 			    });
-				
+				function closeDialog() {
+					$('#mdWindow, #mdOverlay').stop().animate({opacity:'0'},_setting.fadeTime,function(){
+						$('#mdWindow, #mdOverlay').remove();
+					});
+				}
 			}
 	}
 	$.fn.ccwform=function(method) {
