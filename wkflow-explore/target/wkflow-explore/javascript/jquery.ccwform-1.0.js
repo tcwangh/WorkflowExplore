@@ -47,12 +47,12 @@
 				});
 				$('#mdConfirm').on('click',function(){
 			        console.debug("confirm click");
-			        console.debug($('#contWrap').find('input'));
+			        //console.debug($('#contWrap').find('input'));
 			        var srcSectionId = $(this).attr('srcSec');
 			        var inputList = $('#contWrap').find('input');
 			        var inputData = {};
 			        for(var i = 0; i < inputList.length; i++) {
-			        	console.log("loop["+ i+ "]", inputList[i].id + "-"+ inputList[i].value)
+			        	//console.log("loop["+ i+ "]", inputList[i].id + "-"+ inputList[i].value)
 			        	inputData[inputList[i].id]=inputList[i].value;
 			        }
 			        $('#' + srcSectionId).trigger(ccwform_defaults.afterSubmitEvent,[{dialogInputData:inputData}]);
@@ -60,6 +60,7 @@
 			    });
 				$('#mdCancel').on('click',function(){
 			        console.debug("cancel click");
+			        closeDialog();
 			    });
 				function closeDialog() {
 					$('#mdWindow, #mdOverlay').stop().animate({opacity:'0'},_setting.fadeTime,function(){

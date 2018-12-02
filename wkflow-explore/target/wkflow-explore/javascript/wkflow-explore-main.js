@@ -14,6 +14,7 @@ function eventWindowLoaded(){
 	_theAppContext = appStart();
 }
 function appStart() {
+	var workflowTemplatesMap = {};
 	var theAppObj = {
 			init: function() {
 				this.initFuncIcons();
@@ -108,6 +109,8 @@ function appStart() {
 				var dsgAreaLeftDivId = theNewTabId + "_DesignLeft"
 				var dsgAreaRightDivId = theNewTabId + "_DesignRight"
 				var dsgTabDivId= "tab_" + flowTab;
+				var workflowTemplateInfo = workflowTemplatesMap[theNewTabId];
+				console.debug(workflowTemplateInfo);
 				var dsgSectionId = 	"<section id='" + dsgAreaId + "' class='designAreaContainer' >" + 
 										"<div id='" + dsgAreaLeftDivId + "' class='designAreaLeft' ></div>" +
 										"<div id='" + dsgAreaRightDivId + "' class='designAreaRight' ></div>" + 
@@ -117,28 +120,32 @@ function appStart() {
 					configDivId:dsgAreaLeftDivId,
 					displayDivId:dsgAreaRightDivId,
 					wkflowId:theNewTabId,
-					dsgAreaId:dsgAreaId
+					dsgAreaId:dsgAreaId,
+					workflowTemplateInfo:workflowTemplateInfo
 				});
 				$('#' + dsgAreaId).bind('wkflowdsg.wkflowInfoChangeReq',function(e,data){
-					console.debug("ChangeWorkflowInfoRequest");
-					console.debug(e);
-					console.debug(data);
+					console.debug("ChangeWorkflowInfoRequest-"+ data.wkflw_key);
+					//console.debug(e);
+					//console.debug(data);
 					//_theAppContext.tabChangeDone(e,data);
-					_theAppContext.showWorkflowInfoModifyForm(data);
+					var workflowTemplateInfo = workflowTemplatesMap[data.wkflw_key];
+					//console.debug(workflowTemplateInfo);
+					_theAppContext.showWorkflowInfoModifyForm(workflowTemplateInfo,_theAppContext.displayWorkflowInfoToZtree);
 				});
 				
 			},
 			newFile : function (obj) {
 				var newWrkflowId = obj.getFormattedDate();
 				console.debug("Create New Workflow ID:" + newWrkflowId);
-				//$('#tabContainer').jQdmtabAdd({
-				//	newTabId:newWrkflowId,
-				//	closeEventHandler:obj.closeTabEventHandler()});
+				var workflowTemplateInfo = _theAppContext.getNewWorkflowTemplateObj(newWrkflowId);
+				workflowTemplatesMap[newWrkflowId]=workflowTemplateInfo;
+				console.debug(workflowTemplatesMap);
 				$('#tabContainer').ccwtab('addtab',{
 					newTabId:newWrkflowId,
 					displayName:newWrkflowId,
 					closeTab:'enabled'
 				});
+				
 			},
 			tabCreateDone : function (e,data) {
 				console.debug(e);
@@ -177,27 +184,60 @@ function appStart() {
 			closeTabEventHandler : function () {
 				console.debug("tab closed");
 			},
-			showWorkflowInfoModifyForm : function (data) {
+			showWorkflowInfoModifyForm : function (workflowTemplateInfo,callback) {
 				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
 				var inputSrc = 	"<table class='form_table'>" +
 							   		"<tr>" +
 										"<td><label id='lbl_wkflwKey'>Workflow Key</label></td>" + 
-				                    	"<td><input id='input_wkflwKey' type='text' disabled value='" + data.wkflw_key + "'></td>" +
+				                    	"<td><input id='input_wkflwKey' type='text' disabled value='" + workflowTemplateInfo.WKFLW_KEY + "'></td>" +
 				                    "</tr>" +
 				                    "<tr>" +
 				                    	"<td><label id='lbl_wkflwId'>Workflow ID</label></td>" + 
-				                    	"<td><input id='input_wkflwId' type='text' placeholder'workflow Id'></td>" +
+				                    	"<td><input id='input_wkflwId' type='text' value='" + workflowTemplateInfo.WKFLW_ID + "'  placeholder'workflow Id'></td>" +
 				                    "</tr>" +
 				                    "<tr>" +
-			                    		"<td><label id='lbl_wkflwId'>Workflow Name</label></td>" + 
-			                    		"<td><input id='input_wkflwName' type='text' placeholder'workflow name'></td>" +
+			                    		"<td><label id='lbl_wkflwName'>名稱</label></td>" + 
+			                    		"<td><input id='input_wkflwName' type='text' value='" + workflowTemplateInfo.WKFLW_NAME + "' placeholder'workflow name'></td>" +
 			                    	"</tr>" +
+			                    	 "<tr>" +
+			                    		"<td><label id='lbl_wkflwCatg'>類別</label></td>" + 
+			                    		"<td><input id='input_wkflwCatg' type='text' value='" + workflowTemplateInfo.WKFLW_CATG + "' placeholder'workflow name'></td>" +
+			                    	"</tr>" +
+			                    	 "<tr>" +
+			                    		"<td><label id='lbl_wkflwReason'>理由</label></td>" + 
+			                    		"<td><input id='input_wkflwReason' type='text' value='" + workflowTemplateInfo.WKFLW_REASON + "' placeholder'workflow name'></td>" +
+			                    	"</tr>" +
+			                    	 "<tr>" +
+			                    		"<td><label id='lbl_wkflwDesc'>說明</label></td>" + 
+			                    		"<td><input id='input_wkflwDesc' type='text' value='" + workflowTemplateInfo.WKFLW_DESC + "' placeholder'workflow name'></td>" +
+			                    	"</tr>" +
+			                    	 "<tr>" +
+			                    		"<td><label id='lbl_wkflwStatus'>狀態</label></td>" + 
+			                    		"<td><input id='input_wkflwStatus' type='text' value='" + workflowTemplateInfo.WKFLW_STATUS + "' placeholder'workflow name'></td>" +
+			                    	"</tr>" +
+			                    	"<tr>" +
+			                    		"<td><label id='lbl_wkflwPrivId'>權限代碼</label></td>" + 
+			                    		"<td><input id='input_wkflwPrivId' type='text' value='" + workflowTemplateInfo.WKFLW_PRIV_ID + "' placeholder'workflow name'></td>" +
+			                    	"</tr>" +
+			                    	"<tr>" +
+			                    		"<td><label id='lbl_wkflwClaimUser'>申請人</label></td>" + 
+			                    		"<td><input id='input_wkflwDesc' type='text' value='" + workflowTemplateInfo.CALIM_USER + "' placeholder'workflow name'></td>" +
+			                    	"</tr>" +
+			                    	"<tr>" +
+		                    			"<td><label id='lbl_wkflwClaimTime'>註冊時間</label></td>" + 
+		                    			"<td><input id='input_wkflwDesc' type='text' disabled value='" + workflowTemplateInfo.CALIM_TIME + "' placeholder'workflow name'></td>" +
+		                    		"</tr>" +
+		                    		"<tr>" +
+		                    			"<td><label id='lbl_bpmnProcId'>BPMN流程編號</label></td>" + 
+		                    			"<td><input id='input_bpmnProcId' type='text' value='" + workflowTemplateInfo.ACT_PROC_ID + "' placeholder'workflow name'></td>" +
+		                    		"</tr>" +
+		                    		"<tr>" +
+	                    				"<td><label id='lbl_bpmnFileName'>BPMN檔案名稱</label></td>" + 
+	                    				"<td><input id='input_bpmnFileName' type='text' disabled value='" + workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME + "' placeholder'workflow name'></td>" +
+	                    			"</tr>" +
 			                    "</table>";
 				
-				
-				
 				$('body').append(wkflwInfoModifyDialog);
-				//$('#wkflwInfoDialog').ccwform('init',{
 				$('#modelInclude').ccwform('init',{
 					inputSrc:inputSrc,
 					dialogHeader:"設定樣板資訊",
@@ -205,8 +245,27 @@ function appStart() {
 				});
 				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
 					console.debug(data);
+					callback(data);
 				});
-				
+			},
+			displayWorkflowInfoToZtree(data){
+				console.debug(data);
+			},
+			getNewWorkflowTemplateObj:function(newWKFLW_KEY){
+				var workflowTemplateInfo = {};
+				workflowTemplateInfo.WKFLW_KEY=newWKFLW_KEY;
+				workflowTemplateInfo.WKFLW_ID=newWKFLW_KEY;
+				workflowTemplateInfo.WKFLW_NAME="TBD";
+				workflowTemplateInfo.WKFLW_CATG="TBD";
+				workflowTemplateInfo.WKFLW_REASON="TBD";
+				workflowTemplateInfo.WKFLW_DESC="";
+				workflowTemplateInfo.WKFLW_STATUS="";
+				workflowTemplateInfo.WKFLW_PRIV_ID="";
+				workflowTemplateInfo.CALIM_USER="";
+				workflowTemplateInfo.CALIM_TIME="%SYS_DATE%";
+				workflowTemplateInfo.ACT_PROC_ID="";
+				workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME="";
+				return workflowTemplateInfo;
 			}
 	}
 	return theAppObj.init();
