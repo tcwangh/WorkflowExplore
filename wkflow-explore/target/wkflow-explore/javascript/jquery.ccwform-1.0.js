@@ -29,6 +29,11 @@
 				              "    </div>"
 				              "</div>";
 				$('body').append(theForm);
+				var mdHeight = $('#mdWindow').height();
+				console.debug("mdHeight:" + mdHeight);
+				var mdMarginTop = (mdHeight/2 * -1) + "px";
+				console.debug("mdMarginTop:" + mdMarginTop);
+				$("#mdWindow").css("margin-top", mdMarginTop );
 				$('#mdOverlay, #mdWindow').css({display:'block',opacity:'0'});
 				$('#mdOverlay').css({height:wdHeight}).stop().
 					animate({opacity:_setting.overlayOpacity},_setting.fadeTime);
@@ -54,6 +59,11 @@
 			        for(var i = 0; i < inputList.length; i++) {
 			        	//console.log("loop["+ i+ "]", inputList[i].id + "-"+ inputList[i].value)
 			        	inputData[inputList[i].id]=inputList[i].value;
+			        }
+			        var textAreaList = $('#contWrap').find('textarea');
+			        for(var i = 0; i < textAreaList.length; i++) {
+			        	console.log("loop["+ i+ "]", textAreaList[i].id + "-"+ textAreaList[i].value)
+			        	inputData[textAreaList[i].id]=textAreaList[i].value;
 			        }
 			        $('#' + srcSectionId).trigger(ccwform_defaults.afterSubmitEvent,[{dialogInputData:inputData}]);
 			        closeDialog();

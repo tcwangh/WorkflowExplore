@@ -188,52 +188,52 @@ function appStart() {
 				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
 				var inputSrc = 	"<table class='form_table'>" +
 							   		"<tr>" +
-										"<td><label id='lbl_wkflwKey'>Workflow Key</label></td>" + 
-				                    	"<td><input id='input_wkflwKey' type='text' disabled value='" + workflowTemplateInfo.WKFLW_KEY + "'></td>" +
+										"<td><label id='lbl_wkflwKey' class='form_label'>Workflow Key</label></td>" + 
+				                    	"<td><input id='input_wkflwKey' type='text' disabled value='" + workflowTemplateInfo.WKFLW_KEY + "' class='textbox_M'></td>" +
 				                    "</tr>" +
 				                    "<tr>" +
-				                    	"<td><label id='lbl_wkflwId'>Workflow ID</label></td>" + 
-				                    	"<td><input id='input_wkflwId' type='text' value='" + workflowTemplateInfo.WKFLW_ID + "'  placeholder'workflow Id'></td>" +
+				                    	"<td><label id='lbl_wkflwId' class='form_label'>Workflow ID</label></td>" + 
+				                    	"<td><input id='input_wkflwId' type='text' value='" + workflowTemplateInfo.WKFLW_ID + "'  class='textbox_M'></td>" +
 				                    "</tr>" +
 				                    "<tr>" +
-			                    		"<td><label id='lbl_wkflwName'>名稱</label></td>" + 
-			                    		"<td><input id='input_wkflwName' type='text' value='" + workflowTemplateInfo.WKFLW_NAME + "' placeholder'workflow name'></td>" +
+			                    		"<td><label id='lbl_wkflwName' class='form_label'>名稱</label></td>" + 
+			                    		"<td><input id='input_wkflwName' type='text' value='" + workflowTemplateInfo.WKFLW_NAME + "' class='textbox_L'></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
-			                    		"<td><label id='lbl_wkflwCatg'>類別</label></td>" + 
-			                    		"<td><input id='input_wkflwCatg' type='text' value='" + workflowTemplateInfo.WKFLW_CATG + "' placeholder'workflow name'></td>" +
+			                    		"<td><label id='lbl_wkflwCatg' class='form_label'>類別</label></td>" + 
+			                    		"<td><input id='input_wkflwCatg' type='text' value='" + workflowTemplateInfo.WKFLW_CATG + "' class='textbox_L'></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
-			                    		"<td><label id='lbl_wkflwReason'>理由</label></td>" + 
-			                    		"<td><input id='input_wkflwReason' type='text' value='" + workflowTemplateInfo.WKFLW_REASON + "' placeholder'workflow name'></td>" +
+			                    		"<td><label id='lbl_wkflwReason' class='form_label'>理由</label></td>" + 
+			                    		"<td><input id='input_wkflwReason' type='text' value='" + workflowTemplateInfo.WKFLW_REASON + "' class='textbox_L'></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
-			                    		"<td><label id='lbl_wkflwDesc'>說明</label></td>" + 
-			                    		"<td><input id='input_wkflwDesc' type='text' value='" + workflowTemplateInfo.WKFLW_DESC + "' placeholder'workflow name'></td>" +
+			                    	 	"<td><label id='lbl_wkflwDesc' class='form_label'>說明</label></td>" + 
+			                    		"<td><textarea id='input_wkflwDesc' class='textarea_L'>" + workflowTemplateInfo.WKFLW_DESC + "</textarea></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
-			                    		"<td><label id='lbl_wkflwStatus'>狀態</label></td>" + 
-			                    		"<td><input id='input_wkflwStatus' type='text' value='" + workflowTemplateInfo.WKFLW_STATUS + "' placeholder'workflow name'></td>" +
+			                    		"<td><label id='lbl_wkflwStatus' class='form_label'>狀態</label></td>" + 
+			                    		"<td><input id='input_wkflwStatus' type='text' value='" + workflowTemplateInfo.WKFLW_STATUS + "' class='textbox_M'></td>" +
 			                    	"</tr>" +
 			                    	"<tr>" +
-			                    		"<td><label id='lbl_wkflwPrivId'>權限代碼</label></td>" + 
-			                    		"<td><input id='input_wkflwPrivId' type='text' value='" + workflowTemplateInfo.WKFLW_PRIV_ID + "' placeholder'workflow name'></td>" +
+			                    		"<td><label id='lbl_wkflwPrivId' class='form_label'>權限代碼</label></td>" + 
+			                    		"<td><input id='input_wkflwPrivId' type='text' value='" + workflowTemplateInfo.WKFLW_PRIV_ID + "' class='textbox_M'></td>" +
 			                    	"</tr>" +
 			                    	"<tr>" +
-			                    		"<td><label id='lbl_wkflwClaimUser'>申請人</label></td>" + 
-			                    		"<td><input id='input_wkflwDesc' type='text' value='" + workflowTemplateInfo.CALIM_USER + "' placeholder'workflow name'></td>" +
+			                    		"<td><label id='lbl_wkflwClaimUser' class='form_label'>申請人</label></td>" + 
+			                    		"<td><input id='input_wkflwClaimUser' type='text' value='" + workflowTemplateInfo.CALIM_USER + "' class='textbox_M'></td>" +
 			                    	"</tr>" +
 			                    	"<tr>" +
-		                    			"<td><label id='lbl_wkflwClaimTime'>註冊時間</label></td>" + 
-		                    			"<td><input id='input_wkflwDesc' type='text' disabled value='" + workflowTemplateInfo.CALIM_TIME + "' placeholder'workflow name'></td>" +
+		                    			"<td><label id='lbl_wkflwClaimTime' class='form_label'>註冊時間</label></td>" + 
+		                    			"<td><input id='input_wkflwDesc' type='text' disabled value='" + workflowTemplateInfo.CALIM_TIME + "' class='textbox_M'></td>" +
 		                    		"</tr>" +
 		                    		"<tr>" +
-		                    			"<td><label id='lbl_bpmnProcId'>BPMN流程編號</label></td>" + 
-		                    			"<td><input id='input_bpmnProcId' type='text' value='" + workflowTemplateInfo.ACT_PROC_ID + "' placeholder'workflow name'></td>" +
+		                    			"<td><label id='lbl_bpmnProcId' class='form_label'>BPMN流程編號</label></td>" + 
+		                    			"<td><input id='input_bpmnProcId' type='text' value='" + workflowTemplateInfo.ACT_PROC_ID + "' class='textbox_M'></td>" +
 		                    		"</tr>" +
 		                    		"<tr>" +
-	                    				"<td><label id='lbl_bpmnFileName'>BPMN檔案名稱</label></td>" + 
-	                    				"<td><input id='input_bpmnFileName' type='text' disabled value='" + workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME + "' placeholder'workflow name'></td>" +
+	                    				"<td><label id='lbl_bpmnFileName' class='form_label'>BPMN檔案名稱</label></td>" + 
+	                    				"<td><input id='input_bpmnFileName' type='text' disabled value='" + workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME + "' class='textbox_L'></td>" +
 	                    			"</tr>" +
 			                    "</table>";
 				
