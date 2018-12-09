@@ -6,6 +6,8 @@
 	
 	var wkflowdsg_defaults = {
 			addTaskEventBinder:'.addTaskIcon',
+			expandEventBinder:'.expandIcon',
+			collapseEventBinder:'.collapseIcon',
 			wkflowInfoChangeReqEvent:'wkflowdsg.wkflowInfoChangeReq',
 			componentSettings:'wkflowdsg_settings'
 	};
@@ -23,8 +25,8 @@
 								"           	<tr>" + 
 								"                   <td class='task-title-table'>Start</td>" +
 								"					<td class='funcIcon'><img id='setWFParameterImg' class='imgIcon', src='images/parameters3.png' title='Setup Workflow Parameters'></td>" +
-								"                   <td class='funcIcon'><img id='expandStart' class='imgIcon', src='images/expand2.png' title='Show detail'></td>" +
-								"                   <td class='funcIcon'><img id='collapseStart' class='imgIcon', src='images/collapse.png' title='Collapse the detail'></td>" +
+								"                   <td><img id='expandStart' class='imgIcon expandIcon', src='images/expand.png' title='Show detail'></td>" +
+								"                   <td><img id='collapseStart' class='imgIcon collapseIcon', src='images/collapse.png' title='Collapse the detail'></td>" +
 								"				</tr>" + 
 								"			</table>"+
 								"       </div>" + 
@@ -50,6 +52,18 @@
 								"   </div>" +
 								"</div>";
 				$(this).find("div[id='" + options.configDivId + "']").append(newProcess);
+				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.expandEventBinder,'mouseover',function(e) {
+					$(this).attr("src","images/expand_on.png");
+				});
+				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.expandEventBinder,'mouseleave',function(e) {
+					$(this).attr("src","images/expand.png");
+				});
+				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.collapseEventBinder,'mouseover',function(e) {
+					$(this).attr("src","images/collapse_on.png");
+				});
+				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.collapseEventBinder,'mouseleave',function(e) {
+					$(this).attr("src","images/collapse.png");
+				});
 				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.addTaskEventBinder,'click',function(e) {
 					console.debug(e);
 					console.debug("Add Task Event fired!");
@@ -63,8 +77,8 @@
 									"           	<tr>" + 
 									"                   <td class='task-title-table'>Task</td>" +
 									"					<td class='funcIcon'><img id='setWFParameterImg' class='imgIcon', src='images/parameters3.png' title='Setup Workflow Parameters'></td>" +
-									"                   <td class='funcIcon'><img id='expandStart' class='imgIcon', src='images/expand2.png' title='Show detail'></td>" +
-									"                   <td class='funcIcon'><img id='collapseStart' class='imgIcon', src='images/collapse.png' title='Collapse the detail'></td>" +
+									"                   <td><img id='expandStart' class='imgIcon expandIcon', src='images/expand.png' title='Show detail'></td>" +
+									"                   <td><img id='collapseStart' class='imgIcon collapseIcon', src='images/collapse.png' title='Collapse the detail'></td>" +
 									"				</tr>" + 
 									"			</table>"+
 									"       </div>" + 
@@ -116,9 +130,8 @@
 				//append ztree div to workflow-info container
 				var wkflowInfoContainerDivId = "tab_"+ wkflowInfoTab;
 				var wkflowInfoZtreeDivId = "ztree_" + wkflowInfoTab;
-				var ztreeDiv = "<div id='" + wkflowInfoZtreeDivId + "' class='ztree' dsgarea='" + options.dsgAreaId + "' wkflw_key='" + options.wkflowId + 
+				var ztreeDiv = "<div id='" + wkflowInfoZtreeDivId + "' class='ztree wkflwInfoZTree' dsgarea='" + options.dsgAreaId + "' wkflw_key='" + options.wkflowId + 
 					"' wkflwInfoContainerDiv='" + wkflowInfoContainerDivId + "' wkflwZtreeDiv='" + wkflowInfoZtreeDivId + "'></div>";
-				
 				var wkflowInfoDivSettings = {
 						"wkflowInfoContainerDivId":wkflowInfoContainerDivId,
 						"wkflowInfoZtreeDivId":wkflowInfoZtreeDivId,
@@ -127,9 +140,8 @@
 				var _setting = $.extend(defaults,options,wkflowInfoDivSettings);
 				$(this).data(wkflowdsg_defaults.componentSettings,_setting);
 				console.debug(_setting);
-				
 				$('#' + wkflowInfoContainerDivId).append(ztreeDiv);
-				zTreeNodes = [
+				var zTreeNodes = [
 			      	{"name":"模版資訊", open:true, iconOpen:"css/zTreeStyle/img/diy/1_open.png", iconClose:"css/zTreeStyle/img/diy/1_close.png",children: [
 			      	{ "name":"識別碼" + "-" + options.workflowTemplateInfo.WKFLW_KEY , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
 			      	{ "name":"編號" + "-" + options.workflowTemplateInfo.WKFLW_ID , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
@@ -146,29 +158,50 @@
 			      	]}];
 				
 				var setting = {
-						callback: {
-							onDblClick: myOnDblClick
-						}
 				};
 				var zTreeObj;
 				zTreeObj=  $.fn.zTree.init($("#" + wkflowInfoZtreeDivId), setting, zTreeNodes);
 				
-				function myOnDblClick(event, treeId, treeNode) {
-					//console.debug(treeNode);
-					var dsgSourceDivId= $('#'+treeNode.tId).closest('div').attr('dsgarea');
-					var dsgWorkflowKey= $('#'+treeNode.tId).closest('div').attr('wkflw_key');
-					var wkflowInfoContainerDivId= $('#'+treeNode.tId).closest('div').attr('wkflwInfoContainerDiv');
-					var wkflowInfoZtreeDivId= $('#'+treeNode.tId).closest('div').attr('wkflwZtreeDiv');
-					//console.debug(dsgSourceDivId);
-					//alert(treeNode ? treeNode.tId + ", " + treeNode.name : "isRoot");
+				$('#' + wkflowInfoZtreeDivId).on('click',function(e){
+					var dsgSourceDivId = $(this).attr('dsgarea');
+					var dsgWorkflowKey= $(this).attr('wkflw_key');
+					var wkflowInfoContainerDivId= $(this).attr('wkflwInfoContainerDiv');
+					var wkflowInfoZtreeDivId= $(this).attr('wkflwZtreeDiv');
+					console.debug(dsgSourceDivId);
 					$('#' + dsgSourceDivId).trigger(wkflowdsg_defaults.wkflowInfoChangeReqEvent,
-							[{treeNodeName:treeNode.name,wkflw_key:dsgWorkflowKey,containerId:wkflowInfoContainerDivId,
+							[{wkflw_key:dsgWorkflowKey,containerId:wkflowInfoContainerDivId,
 								ztreeDivId:wkflowInfoZtreeDivId}]);
-				}
+					
+				});
 			},
 			updateWorkflowInfo:function(options){
 				console.debug("updateWorkflowInfo");
 				console.debug(options);
+				var _setting = $(this).data(wkflowdsg_defaults.componentSettings);
+				//console.debug(_setting);
+				//var wkflowInfoContainerDivId = _setting.wkflowInfoContainerDivId;
+				var wkflowInfoZtreeDivId = _setting.wkflowInfoZtreeDivId;
+				//var ztreeDiv = _setting.wkflowInfoZtreeDivId;
+				//$('#' + wkflowInfoContainerDivId).append(ztreeDiv);
+				zTreeNodes = [
+			      	{"name":"模版資訊", open:true, iconOpen:"css/zTreeStyle/img/diy/1_open.png", iconClose:"css/zTreeStyle/img/diy/1_close.png",children: [
+			      	{ "name":"識別碼" + "-" + options.workflowTemplateInfo.WKFLW_KEY , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"編號" + "-" + options.workflowTemplateInfo.WKFLW_ID , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"名稱" + "-" + options.workflowTemplateInfo.WKFLW_NAME , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"類別" + "-" + options.workflowTemplateInfo.WKFLW_CATG , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"理由" + "-" + options.workflowTemplateInfo.WKFLW_REASON , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"說明" + "-" + options.workflowTemplateInfo.WKFLW_DESC , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"狀態" + "-" + options.workflowTemplateInfo.WKFLW_STATUS  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"權限代碼" + "-" + options.workflowTemplateInfo.WKFLW_PRIV_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"申請人" + "-"  + options.workflowTemplateInfo.CALIM_USER , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"申請時間" + "-" + options.workflowTemplateInfo.CALIM_TIME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"BPMN流程編號" + "-" + options.workflowTemplateInfo.ACT_PROC_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"BPMN檔案名稱" + "-" + options.workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"}
+			      	]}];
+				var setting = {
+				};
+				
+				var zTreeObj=  $.fn.zTree.init($("#" + wkflowInfoZtreeDivId), setting, zTreeNodes);
 			}
 	
 			

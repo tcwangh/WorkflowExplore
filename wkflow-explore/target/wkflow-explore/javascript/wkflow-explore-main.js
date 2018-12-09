@@ -30,6 +30,7 @@ function appStart() {
 					"<table class='icon_table'>" + 
 						"<tr>" + 
 							"<td class='funcIcon'><img id='createWorkflowImg' class='imgIcon', src='images/create1.png' title='Create New Workflow'></td>" +
+							"<td class='funcIcon'><img id='downloadImg' class='imgIcon', src='images/download.png' title='Download BPMN and Settings'></td>" +
 						"</tr>" + 
 					"</table>";
 				$('#toolbarDiv').append(funIcon);
@@ -250,6 +251,23 @@ function appStart() {
 			},
 			displayWorkflowInfoToZtree(data){
 				console.debug(data);
+				var workflowTemplateInfo = workflowTemplatesMap[data.dialogInputData.input_wkflwKey];
+				workflowTemplateInfo.WKFLW_NAME = data.dialogInputData.input_wkflwName;
+				workflowTemplateInfo.WKFLW_CATG = data.dialogInputData.input_wkflwCatg;
+				workflowTemplateInfo.WKFLW_REASON = data.dialogInputData.input_wkflwReason;
+				workflowTemplateInfo.WKFLW_DESC = data.dialogInputData.input_wkflwDesc;
+				workflowTemplateInfo.WKFLW_STATUS = data.dialogInputData.input_wkflwStatus;
+				workflowTemplateInfo.WKFLW_PRIV_ID = data.dialogInputData.input_wkflwPrivId;
+				workflowTemplateInfo.CALIM_USER = data.dialogInputData.input_wkflwClaimUser;
+				workflowTemplateInfo.ACT_PROC_ID = data.dialogInputData.input_bpmnProcId;
+				workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME = data.dialogInputData.input_bpmnFileName;
+				console.debug(workflowTemplateInfo);
+				var dsgAreaId = data.dialogInputData.input_wkflwKey + "_DesignArea";
+				$('#' + dsgAreaId).wkflowdsg('updateWorkflowInfo',{
+					wkflowId:data.dialogInputData.input_wkflwKey,
+					dsgAreaId:dsgAreaId,
+					workflowTemplateInfo:workflowTemplateInfo
+				});
 			},
 			getNewWorkflowTemplateObj:function(newWKFLW_KEY){
 				var workflowTemplateInfo = {};
