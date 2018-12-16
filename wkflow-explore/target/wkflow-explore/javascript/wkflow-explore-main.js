@@ -20,8 +20,7 @@ function appStart() {
 				this.initFuncIcons();
 				this.initTabSection();
 				$('#createWorkflowImg').on('click',jQuery.proxy(this,'newFile',this));
-				//var newWorkflowIcon  = document.getElementById('createWorkflowImg') ;
-				//newWorkflowIcon.onclick=this.newFile;
+				$('#downloadImg').on('click',jQuery.proxy(this,'downloadBPMN',this));
 				var displayAreaInfo = this.getDisplayInfo();
 				return this;
 			},
@@ -147,6 +146,24 @@ function appStart() {
 					closeTab:'enabled'
 				});
 				
+			},
+			downloadBPMN : function (obj) {
+				console.debug(obj);
+				console.debug("Hi,Let's download BPMN");
+				var search = {
+					    "pName" : "bhanu",
+					    "lName" :"prasad"
+					    }
+				$.ajax({
+				    type: "POST",
+				    /*contentType : 'application/json; charset=utf-8',*/ //use Default contentType
+				    dataType : 'json',
+				    url: "/wkflow-explore/hello",
+				    data: search, // Note it is important without stringifying
+				    success :function(result) {
+				     console.debug(result);
+				    }
+				    });
 			},
 			tabCreateDone : function (e,data) {
 				console.debug(e);

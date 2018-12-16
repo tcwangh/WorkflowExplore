@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.servlet.ViewResolver;
@@ -17,9 +16,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"idv.tim.wkflow.config","idv.tim.wkflow.datasource","idv.tim.wkflow.persistence"})
+@ComponentScan({"idv.tim.wkflow.config"})
 @PropertySource(value= {"classpath:application.properties"})
-@ImportResource({"classpath:applicationContext-activiti.xml"})
 public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware{
   private ApplicationContext applicationContext;
   

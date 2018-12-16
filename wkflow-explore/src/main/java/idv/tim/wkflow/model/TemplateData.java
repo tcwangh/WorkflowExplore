@@ -1,7 +1,5 @@
 package idv.tim.wkflow.model;
 
-import java.sql.Timestamp;
-
 public class TemplateData {
 	
 	private String workflowKey;

@@ -3,6 +3,7 @@
 	<deployment>
 		<dependencies>
 			<module name="com.h2database.h2" />
+			<module name="config.siview.wkflow-explore" />
 		</dependencies>
 		<exclusions>
 			<module name="org.apache.log4j" />
