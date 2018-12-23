@@ -217,6 +217,17 @@
 						opacity:1
 					});
 				}
+			},
+			getActiveTab:function(options){
+				var currentTabIdx=$(this).children('ul').find("li[class='current']").index();
+				console.debug($(this).children('ul'));
+				var currentTabId = $(this).children('ul').find("li[class='current']").children('a').eq(0).attr('id'); //20181020
+				var theTabGroup = $(this).attr('tabGroup');
+				return {
+					"currentTabIdx":currentTabIdx,
+					"currentTabId":currentTabId,
+					"tabGroup":theTabGroup
+				};
 			}
 	}
 	$.fn.ccwtab=function(method) {

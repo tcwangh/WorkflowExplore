@@ -143,18 +143,18 @@
 				$('#' + wkflowInfoContainerDivId).append(ztreeDiv);
 				var zTreeNodes = [
 			      	{"name":"模版資訊", open:true, iconOpen:"css/zTreeStyle/img/diy/1_open.png", iconClose:"css/zTreeStyle/img/diy/1_close.png",children: [
-			      	{ "name":"識別碼" + "-" + options.workflowTemplateInfo.WKFLW_KEY , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"編號" + "-" + options.workflowTemplateInfo.WKFLW_ID , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"名稱" + "-" + options.workflowTemplateInfo.WKFLW_NAME , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"類別" + "-" + options.workflowTemplateInfo.WKFLW_CATG , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"理由" + "-" + options.workflowTemplateInfo.WKFLW_REASON , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"說明" + "-" + options.workflowTemplateInfo.WKFLW_DESC , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"狀態" + "-" + options.workflowTemplateInfo.WKFLW_STATUS  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"權限代碼" + "-" + options.workflowTemplateInfo.WKFLW_PRIV_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"申請人" + "-"  + options.workflowTemplateInfo.CALIM_USER , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"申請時間" + "-" + options.workflowTemplateInfo.CALIM_TIME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"BPMN流程編號" + "-" + options.workflowTemplateInfo.ACT_PROC_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"BPMN檔案名稱" + "-" + options.workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"}
+			      	{ "name":"識別碼" + "-" + options.workflowDefinitionData.templateData.WKFLW_KEY , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"編號" + "-" + options.workflowDefinitionData.templateData.WKFLW_ID , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"名稱" + "-" + options.workflowDefinitionData.templateData.WKFLW_NAME , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"類別" + "-" + options.workflowDefinitionData.templateData.WKFLW_CATG , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"理由" + "-" + options.workflowDefinitionData.templateData.WKFLW_REASON , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"說明" + "-" + options.workflowDefinitionData.templateData.WKFLW_DESC , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"狀態" + "-" + options.workflowDefinitionData.templateData.WKFLW_STATUS  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"權限代碼" + "-" + options.workflowDefinitionData.templateData.WKFLW_PRIV_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"申請人" + "-"  + options.workflowDefinitionData.templateData.CALIM_USER , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"申請時間" + "-" + options.workflowDefinitionData.templateData.CALIM_TIME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"BPMN流程編號" + "-" + options.workflowDefinitionData.templateData.ACT_PROC_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"BPMN檔案名稱" + "-" + options.workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"}
 			      	]}];
 				
 				var setting = {
@@ -185,18 +185,18 @@
 				//$('#' + wkflowInfoContainerDivId).append(ztreeDiv);
 				zTreeNodes = [
 			      	{"name":"模版資訊", open:true, iconOpen:"css/zTreeStyle/img/diy/1_open.png", iconClose:"css/zTreeStyle/img/diy/1_close.png",children: [
-			      	{ "name":"識別碼" + "-" + options.workflowTemplateInfo.WKFLW_KEY , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"編號" + "-" + options.workflowTemplateInfo.WKFLW_ID , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"名稱" + "-" + options.workflowTemplateInfo.WKFLW_NAME , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"類別" + "-" + options.workflowTemplateInfo.WKFLW_CATG , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"理由" + "-" + options.workflowTemplateInfo.WKFLW_REASON , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"說明" + "-" + options.workflowTemplateInfo.WKFLW_DESC , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"狀態" + "-" + options.workflowTemplateInfo.WKFLW_STATUS  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"權限代碼" + "-" + options.workflowTemplateInfo.WKFLW_PRIV_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"申請人" + "-"  + options.workflowTemplateInfo.CALIM_USER , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"申請時間" + "-" + options.workflowTemplateInfo.CALIM_TIME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"BPMN流程編號" + "-" + options.workflowTemplateInfo.ACT_PROC_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
-			      	{ "name":"BPMN檔案名稱" + "-" + options.workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"}
+			      	{ "name":"識別碼" + "-" + options.workflowDefinitionData.templateData.WKFLW_KEY , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"編號" + "-" + options.workflowDefinitionData.templateData.WKFLW_ID , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"名稱" + "-" + options.workflowDefinitionData.templateData.WKFLW_NAME , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"類別" + "-" + options.workflowDefinitionData.templateData.WKFLW_CATG , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"理由" + "-" + options.workflowDefinitionData.templateData.WKFLW_REASON , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"說明" + "-" + options.workflowDefinitionData.templateData.WKFLW_DESC , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"狀態" + "-" + options.workflowDefinitionData.templateData.WKFLW_STATUS  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"權限代碼" + "-" + options.workflowDefinitionData.templateData.WKFLW_PRIV_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"申請人" + "-"  + options.workflowDefinitionData.templateData.CALIM_USER , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"申請時間" + "-" + options.workflowDefinitionData.templateData.CALIM_TIME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"BPMN流程編號" + "-" + options.workflowDefinitionData.templateData.ACT_PROC_ID  , open:false,icon:"css/zTreeStyle/img/diy/9.png"},
+			      	{ "name":"BPMN檔案名稱" + "-" + options.workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME  , open:false,icon:"css/zTreeStyle/img/diy/9.png"}
 			      	]}];
 				var setting = {
 				};

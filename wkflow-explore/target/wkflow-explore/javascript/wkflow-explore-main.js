@@ -11,10 +11,15 @@ function eventDOMLoaded () {
 var _theAppContext;
 function eventWindowLoaded(){
 	console.log('頁面初始化完畢');
+	
 	_theAppContext = appStart();
 }
 function appStart() {
-	var workflowTemplatesMap = {};
+	var designAreaForTabs="tabContainer";
+	var LS_KEYS="LS_KEYS";
+	var LS_KEYS_ARRAY=[];
+	//var workflowTemplatesMap = {};
+	var workflowDefinitionMap = {};
 	var theAppObj = {
 			init: function() {
 				this.initFuncIcons();
@@ -22,6 +27,7 @@ function appStart() {
 				$('#createWorkflowImg').on('click',jQuery.proxy(this,'newFile',this));
 				$('#downloadImg').on('click',jQuery.proxy(this,'downloadBPMN',this));
 				var displayAreaInfo = this.getDisplayInfo();
+				this.loadWorkflowFromLocalStorage();
 				return this;
 			},
 			initFuncIcons : function () {
@@ -109,8 +115,8 @@ function appStart() {
 				var dsgAreaLeftDivId = theNewTabId + "_DesignLeft"
 				var dsgAreaRightDivId = theNewTabId + "_DesignRight"
 				var dsgTabDivId= "tab_" + flowTab;
-				var workflowTemplateInfo = workflowTemplatesMap[theNewTabId];
-				console.debug(workflowTemplateInfo);
+				var workflowDefinitionData= workflowDefinitionMap[theNewTabId];
+				console.debug(workflowDefinitionData);
 				var dsgSectionId = 	"<section id='" + dsgAreaId + "' class='designAreaContainer' >" + 
 										"<div id='" + dsgAreaLeftDivId + "' class='designAreaLeft' ></div>" +
 										"<div id='" + dsgAreaRightDivId + "' class='designAreaRight' ></div>" + 
@@ -121,16 +127,16 @@ function appStart() {
 					displayDivId:dsgAreaRightDivId,
 					wkflowId:theNewTabId,
 					dsgAreaId:dsgAreaId,
-					workflowTemplateInfo:workflowTemplateInfo
+					//workflowTemplateInfo:workflowTemplateInfo
+					workflowDefinitionData:workflowDefinitionData
 				});
 				$('#' + dsgAreaId).bind('wkflowdsg.wkflowInfoChangeReq',function(e,data){
 					console.debug("ChangeWorkflowInfoRequest-"+ data.wkflw_key);
 					//console.debug(e);
 					//console.debug(data);
 					//_theAppContext.tabChangeDone(e,data);
-					var workflowTemplateInfo = workflowTemplatesMap[data.wkflw_key];
-					//console.debug(workflowTemplateInfo);
-					_theAppContext.showWorkflowInfoModifyForm(workflowTemplateInfo,_theAppContext.displayWorkflowInfoToZtree);
+					var workflowDefinitionData= workflowDefinitionMap[data.wkflw_key];
+					_theAppContext.showWorkflowInfoModifyForm(workflowDefinitionData,_theAppContext.displayWorkflowInfoToZtree);
 				});
 				
 			},
@@ -138,8 +144,11 @@ function appStart() {
 				var newWrkflowId = obj.getFormattedDate();
 				console.debug("Create New Workflow ID:" + newWrkflowId);
 				var workflowTemplateInfo = _theAppContext.getNewWorkflowTemplateObj(newWrkflowId);
-				workflowTemplatesMap[newWrkflowId]=workflowTemplateInfo;
-				console.debug(workflowTemplatesMap);
+				var workflowDefinition = new WorkflowDefinition({"WKFLW_KEY":newWrkflowId});
+				console.debug(workflowDefinition);
+				workflowDefinitionMap[newWrkflowId]=workflowDefinition;
+				LS_KEYS_ARRAY.push(newWrkflowId);
+				this.updateWorkflowToLocalStorage(newWrkflowId);
 				$('#tabContainer').ccwtab('addtab',{
 					newTabId:newWrkflowId,
 					displayName:newWrkflowId,
@@ -147,23 +156,76 @@ function appStart() {
 				});
 				
 			},
+			updateWorkflowToLocalStorage:function(workflowId){
+				var keyLen = LS_KEYS_ARRAY.length;
+				var keyList="";
+				for(var i=0;i<keyLen;i++){
+					if (i==keyLen-1) {
+						keyList += LS_KEYS_ARRAY[i];
+					}else {
+						keyList += LS_KEYS_ARRAY[i]+",";
+					}
+				}
+				console.debug("updateWorkflowToLocalStorage["+LS_KEYS+"]:" + keyList);
+				window.localStorage.removeItem(LS_KEYS);
+				window.localStorage.setItem(LS_KEYS, keyList);
+			},
+			loadWorkflowFromLocalStorage:function(){
+				var workflowKeys = window.localStorage.getItem(LS_KEYS);
+				console.debug(workflowKeys);
+				if (workflowKeys!==null){
+					var res = workflowKeys.split(",");
+					console.debug(res.length);
+				}
+				
+			},
+			removeWorkflowFromLocalStorage:function(){
+				windowlocalStorage.removeItem(LS_KEYS);
+			},
 			downloadBPMN : function (obj) {
 				console.debug(obj);
 				console.debug("Hi,Let's download BPMN");
-				var search = {
-					    "pName" : "bhanu",
-					    "lName" :"prasad"
-					    }
-				$.ajax({
-				    type: "POST",
-				    /*contentType : 'application/json; charset=utf-8',*/ //use Default contentType
-				    dataType : 'json',
-				    url: "/wkflow-explore/hello",
-				    data: search, // Note it is important without stringifying
-				    success :function(result) {
-				     console.debug(result);
-				    }
-				    });
+				//var search = {
+				//	    "pName" : "bhanu",
+				//	    "lName" :"prasad"
+				//	    }
+				var theActiveTabInfo = $('#' + designAreaForTabs).ccwtab('getActiveTab',{});
+				console.debug(theActiveTabInfo);
+				//var workflowTemplateInfo = workflowTemplatesMap[theActiveTabInfo.currentTabId];
+				var workflowDefinitionData= workflowDefinitionMap[theActiveTabInfo.currentTabId];
+				
+				console.debug(workflowDefinitionData);
+				console.debug(workflowDefinitionData.getJsonObject());
+				/*
+				var search = {	"templateData": {	"workflowKey":"WKFLW000001",
+	 				  								"workflowId":"dynamicStartEndProcess",
+	 				  								"workflowName":"Dynamic Start End Process",
+	 				  								"workflowCategory":"Dynamic Processes",
+	 				  								"workflowReason":"startEndActivity",
+	 				  								"workflowDescription":"Hello",
+	 				  								"workflowStatus":"Enabled",
+	 				  								"workflowPrivilegeId":"WKFLW000001",
+	 				  								"claimUser":"tcwangh",
+	 				  								"claimTime":"",
+	 				  								"workflowActivitiProcessId":"",
+	 				  								"workflowActivitiDefFileName":""
+	                 							},
+	                 			"inputVariables":[{"name":"lotId","type":"java.lang.String","memo":"hello"}],
+	                 			"inputValues":[{"name":"lotId","type":"java.lang.String","value":"Tim00001.00"}]
+				};
+				*/
+				S_downloadBPMN_SQL(workflowDefinitionData.getJsonObject());   
+				//$.ajax({
+				//    type: "POST",
+				//    data:JSON.stringify(search),//json序列化 
+				//    dataType : 'json',
+				//    contentType : 'application/json; charset=utf-8',
+				//    url: baseUrl + "/wkflow-explore/hello",
+				    //data: search, // Note it is important without stringifying
+				//    success :function(result) {
+				//     console.debug(result);
+				//    }
+				//    });
 			},
 			tabCreateDone : function (e,data) {
 				console.debug(e);
@@ -202,56 +264,56 @@ function appStart() {
 			closeTabEventHandler : function () {
 				console.debug("tab closed");
 			},
-			showWorkflowInfoModifyForm : function (workflowTemplateInfo,callback) {
+			showWorkflowInfoModifyForm : function (workflowDefinitionData,callback) {
 				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
 				var inputSrc = 	"<table class='form_table'>" +
 							   		"<tr>" +
 										"<td><label id='lbl_wkflwKey' class='form_label'>Workflow Key</label></td>" + 
-				                    	"<td><input id='input_wkflwKey' type='text' disabled value='" + workflowTemplateInfo.WKFLW_KEY + "' class='textbox_M'></td>" +
+				                    	"<td><input id='input_wkflwKey' type='text' disabled value='" + workflowDefinitionData.templateData.WKFLW_KEY + "' class='textbox_M'></td>" +
 				                    "</tr>" +
 				                    "<tr>" +
 				                    	"<td><label id='lbl_wkflwId' class='form_label'>Workflow ID</label></td>" + 
-				                    	"<td><input id='input_wkflwId' type='text' value='" + workflowTemplateInfo.WKFLW_ID + "'  class='textbox_M'></td>" +
+				                    	"<td><input id='input_wkflwId' type='text' value='" + workflowDefinitionData.templateData.WKFLW_ID + "'  class='textbox_M'></td>" +
 				                    "</tr>" +
 				                    "<tr>" +
 			                    		"<td><label id='lbl_wkflwName' class='form_label'>名稱</label></td>" + 
-			                    		"<td><input id='input_wkflwName' type='text' value='" + workflowTemplateInfo.WKFLW_NAME + "' class='textbox_L'></td>" +
+			                    		"<td><input id='input_wkflwName' type='text' value='" + workflowDefinitionData.templateData.WKFLW_NAME + "' class='textbox_L'></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
 			                    		"<td><label id='lbl_wkflwCatg' class='form_label'>類別</label></td>" + 
-			                    		"<td><input id='input_wkflwCatg' type='text' value='" + workflowTemplateInfo.WKFLW_CATG + "' class='textbox_L'></td>" +
+			                    		"<td><input id='input_wkflwCatg' type='text' value='" + workflowDefinitionData.templateData.WKFLW_CATG + "' class='textbox_L'></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
 			                    		"<td><label id='lbl_wkflwReason' class='form_label'>理由</label></td>" + 
-			                    		"<td><input id='input_wkflwReason' type='text' value='" + workflowTemplateInfo.WKFLW_REASON + "' class='textbox_L'></td>" +
+			                    		"<td><input id='input_wkflwReason' type='text' value='" + workflowDefinitionData.templateData.WKFLW_REASON + "' class='textbox_L'></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
 			                    	 	"<td><label id='lbl_wkflwDesc' class='form_label'>說明</label></td>" + 
-			                    		"<td><textarea id='input_wkflwDesc' class='textarea_L'>" + workflowTemplateInfo.WKFLW_DESC + "</textarea></td>" +
+			                    		"<td><textarea id='input_wkflwDesc' class='textarea_L'>" + workflowDefinitionData.templateData.WKFLW_DESC + "</textarea></td>" +
 			                    	"</tr>" +
 			                    	 "<tr>" +
 			                    		"<td><label id='lbl_wkflwStatus' class='form_label'>狀態</label></td>" + 
-			                    		"<td><input id='input_wkflwStatus' type='text' value='" + workflowTemplateInfo.WKFLW_STATUS + "' class='textbox_M'></td>" +
+			                    		"<td><input id='input_wkflwStatus' type='text' value='" + workflowDefinitionData.templateData.WKFLW_STATUS + "' class='textbox_M'></td>" +
 			                    	"</tr>" +
 			                    	"<tr>" +
 			                    		"<td><label id='lbl_wkflwPrivId' class='form_label'>權限代碼</label></td>" + 
-			                    		"<td><input id='input_wkflwPrivId' type='text' value='" + workflowTemplateInfo.WKFLW_PRIV_ID + "' class='textbox_M'></td>" +
+			                    		"<td><input id='input_wkflwPrivId' type='text' value='" + workflowDefinitionData.templateData.WKFLW_PRIV_ID + "' class='textbox_M'></td>" +
 			                    	"</tr>" +
 			                    	"<tr>" +
 			                    		"<td><label id='lbl_wkflwClaimUser' class='form_label'>申請人</label></td>" + 
-			                    		"<td><input id='input_wkflwClaimUser' type='text' value='" + workflowTemplateInfo.CALIM_USER + "' class='textbox_M'></td>" +
+			                    		"<td><input id='input_wkflwClaimUser' type='text' value='" + workflowDefinitionData.templateData.CALIM_USER + "' class='textbox_M'></td>" +
 			                    	"</tr>" +
 			                    	"<tr>" +
 		                    			"<td><label id='lbl_wkflwClaimTime' class='form_label'>註冊時間</label></td>" + 
-		                    			"<td><input id='input_wkflwDesc' type='text' disabled value='" + workflowTemplateInfo.CALIM_TIME + "' class='textbox_M'></td>" +
+		                    			"<td><input id='input_wkflwDesc' type='text' disabled value='" + workflowDefinitionData.templateData.CALIM_TIME + "' class='textbox_M'></td>" +
 		                    		"</tr>" +
 		                    		"<tr>" +
 		                    			"<td><label id='lbl_bpmnProcId' class='form_label'>BPMN流程編號</label></td>" + 
-		                    			"<td><input id='input_bpmnProcId' type='text' value='" + workflowTemplateInfo.ACT_PROC_ID + "' class='textbox_M'></td>" +
+		                    			"<td><input id='input_bpmnProcId' type='text' value='" + workflowDefinitionData.templateData.ACT_PROC_ID + "' class='textbox_M'></td>" +
 		                    		"</tr>" +
 		                    		"<tr>" +
 	                    				"<td><label id='lbl_bpmnFileName' class='form_label'>BPMN檔案名稱</label></td>" + 
-	                    				"<td><input id='input_bpmnFileName' type='text' disabled value='" + workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME + "' class='textbox_L'></td>" +
+	                    				"<td><input id='input_bpmnFileName' type='text' disabled value='" + workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME + "' class='textbox_L'></td>" +
 	                    			"</tr>" +
 			                    "</table>";
 				
@@ -268,22 +330,22 @@ function appStart() {
 			},
 			displayWorkflowInfoToZtree(data){
 				console.debug(data);
-				var workflowTemplateInfo = workflowTemplatesMap[data.dialogInputData.input_wkflwKey];
-				workflowTemplateInfo.WKFLW_NAME = data.dialogInputData.input_wkflwName;
-				workflowTemplateInfo.WKFLW_CATG = data.dialogInputData.input_wkflwCatg;
-				workflowTemplateInfo.WKFLW_REASON = data.dialogInputData.input_wkflwReason;
-				workflowTemplateInfo.WKFLW_DESC = data.dialogInputData.input_wkflwDesc;
-				workflowTemplateInfo.WKFLW_STATUS = data.dialogInputData.input_wkflwStatus;
-				workflowTemplateInfo.WKFLW_PRIV_ID = data.dialogInputData.input_wkflwPrivId;
-				workflowTemplateInfo.CALIM_USER = data.dialogInputData.input_wkflwClaimUser;
-				workflowTemplateInfo.ACT_PROC_ID = data.dialogInputData.input_bpmnProcId;
-				workflowTemplateInfo.ACT_PROC_DEF_FILE_NAME = data.dialogInputData.input_bpmnFileName;
-				console.debug(workflowTemplateInfo);
+				var workflowDefinitionData = workflowDefinitionMap[data.dialogInputData.input_wkflwKey]
+				workflowDefinitionData.templateData.WKFLW_NAME = data.dialogInputData.input_wkflwName;
+				workflowDefinitionData.templateData.WKFLW_CATG = data.dialogInputData.input_wkflwCatg;
+				workflowDefinitionData.templateData.WKFLW_REASON = data.dialogInputData.input_wkflwReason;
+				workflowDefinitionData.templateData.WKFLW_DESC = data.dialogInputData.input_wkflwDesc;
+				workflowDefinitionData.templateData.WKFLW_STATUS = data.dialogInputData.input_wkflwStatus;
+				workflowDefinitionData.templateData.WKFLW_PRIV_ID = data.dialogInputData.input_wkflwPrivId;
+				workflowDefinitionData.templateData.CALIM_USER = data.dialogInputData.input_wkflwClaimUser;
+				workflowDefinitionData.templateData.ACT_PROC_ID = data.dialogInputData.input_bpmnProcId;
+				workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME = data.dialogInputData.input_bpmnFileName;
+				console.debug(workflowDefinitionData);
 				var dsgAreaId = data.dialogInputData.input_wkflwKey + "_DesignArea";
 				$('#' + dsgAreaId).wkflowdsg('updateWorkflowInfo',{
 					wkflowId:data.dialogInputData.input_wkflwKey,
 					dsgAreaId:dsgAreaId,
-					workflowTemplateInfo:workflowTemplateInfo
+					workflowDefinitionData:workflowDefinitionData
 				});
 			},
 			getNewWorkflowTemplateObj:function(newWKFLW_KEY){

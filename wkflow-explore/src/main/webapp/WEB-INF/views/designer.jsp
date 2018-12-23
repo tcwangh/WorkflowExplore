@@ -13,6 +13,8 @@
 	<script src="javascript/jquery.cctab-1.0.js"></script>
 	<script src="javascript/jquery.ccwform-1.0.js"></script>
 	<script src="javascript/jquery.wkflow-dsg-1.0.js"></script>
+	<script src="javascript/wkflow-model.js"></script>
+	<script src="javascript/wkflow-explore-callserver.js"></script>
 	<script src="javascript/wkflow-explore-main.js"></script>
 </head>
 <body>

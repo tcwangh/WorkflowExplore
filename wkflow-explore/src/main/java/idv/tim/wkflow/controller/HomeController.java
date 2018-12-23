@@ -6,9 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +15,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+
+import idv.tim.wkflow.model.WorkflowCreateResult;
+import idv.tim.wkflow.model.WorkflowDefinition;
+
 
 
 /**
@@ -73,16 +76,18 @@ public class HomeController {
 		return "designer";
 	}
 	
-	@PostMapping(value = "/hello", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody HashMap<String,String> sayHello() {
+	//@PostMapping(value = "/hello", produces = "application/json" )
+	@RequestMapping(value = "/hello", method = RequestMethod.POST,consumes="application/json")
+	@ResponseBody
+	public  HashMap<String,String> sayHello(@RequestBody WorkflowDefinition workflowDef,Locale locale,Model model) {
 		HashMap<String,String> myMap = new HashMap<String, String>();
         myMap.put("a", "1");
         myMap.put("b", "2");
         logger.info("result map is " + myMap);
         logger.info("[wkflow.rest.url] is " + wkflowRestURL);
-        String bpmnEndPoint = wkflowRestURL + "/workflow"  ;
+        //String bpmnEndPoint = wkflowRestURL + "/workflow"  ;
         RestTemplate rest = new RestTemplate();
-        ResponseEntity<HashMap> response =  rest.postForEntity(bpmnEndPoint, new HashMap(), HashMap.class);
+        ResponseEntity<WorkflowCreateResult> response =  rest.postForEntity(wkflowRestURL, workflowDef, WorkflowCreateResult.class);
         logger.info(response);
         return myMap;
 	
