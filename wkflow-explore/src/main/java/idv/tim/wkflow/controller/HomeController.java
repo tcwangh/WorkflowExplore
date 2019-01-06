@@ -90,6 +90,5 @@ public class HomeController {
         ResponseEntity<WorkflowCreateResult> response =  rest.postForEntity(wkflowRestURL, workflowDef, WorkflowCreateResult.class);
         logger.info(response);
         return myMap;
-	
 	}
 }

@@ -8,7 +8,10 @@
 			addTaskEventBinder:'.addTaskIcon',
 			expandEventBinder:'.expandIcon',
 			collapseEventBinder:'.collapseIcon',
+			wkparamEventBinder:'.wpIcon',
 			wkflowInfoChangeReqEvent:'wkflowdsg.wkflowInfoChangeReq',
+			wkflowInfoChangeDoneEvent:'wkflowdsg.wkflowInfoChangeDone',
+			wkflowParameterClickEvent:'wkflowdsg.wkflowParameterClick',
 			componentSettings:'wkflowdsg_settings'
 	};
 	
@@ -17,14 +20,14 @@
 			init: function(options) {
 				var defaults=wkflowdsg_defaults;
 				
-				var newProcess ="<div class='mainproc'>" +
+				var newProcess ="<div class='mainproc' wkflw_key='" + options.wkflowId + "' dsgarea='" + options.dsgAreaId + "'>" +
 								"	<div class='mainproc-pic'><img id='flowStart' class='flowIcon', src='images/start.png' title='Start the workflow'></div>" +
 								"   <div class='startend'>" +
 								"       <div class='task-title'>" +
 								"       	<table class='icon_table'>" + 
 								"           	<tr>" + 
 								"                   <td class='task-title-table'>Start</td>" +
-								"					<td class='funcIcon'><img id='setWFParameterImg' class='imgIcon', src='images/parameters3.png' title='Setup Workflow Parameters'></td>" +
+								"					<td><img id='setWFParameterImg' class='imgIcon wpIcon', src='images/wp.png' title='Setup Workflow Parameters'></td>" +
 								"                   <td><img id='expandStart' class='imgIcon expandIcon', src='images/expand.png' title='Show detail'></td>" +
 								"                   <td><img id='collapseStart' class='imgIcon collapseIcon', src='images/collapse.png' title='Collapse the detail'></td>" +
 								"				</tr>" + 
@@ -33,12 +36,12 @@
 								"       <div class='task-detail'></div>" +
 								"   </div>" +
 								"</div>" + 
-								"<div class='mainproc'>" +
+								"<div class='mainproc' wkflw_key='" + options.wkflowId + "' dsgarea='" + options.dsgAreaId + "'>" +
 								"	<div class='taskctl'>" +
 								"       <img id='addTaskImg' class='addTaskIcon' src='images/add-task-icon.png' title='Add task' />" +
 								"   </div>" +
 								"</div>" + 
-								"<div class='mainproc'>" +
+								"<div class='mainproc' wkflw_key='" + options.wkflowId + "' dsgarea='" + options.dsgAreaId + "'>" +
 								"	<div class='mainproc-pic'><img id='flowEnd' class='flowIcon', src='images/end.png' title='End of the workflow'></div>" +
 								"	<div class='startend'>" +
 								"       <div class='task-title'>" +
@@ -63,6 +66,18 @@
 				});
 				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.collapseEventBinder,'mouseleave',function(e) {
 					$(this).attr("src","images/collapse.png");
+				});
+				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.wkparamEventBinder,'mouseover',function(e) {
+					$(this).attr("src","images/wp_on.png");
+				});
+				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.wkparamEventBinder,'mouseleave',function(e) {
+					$(this).attr("src","images/wp.png");
+				});
+				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.wkparamEventBinder,'click',function(e) {
+					var dsgWorkflowKey = $(this).closest("div[class*='mainproc']").attr('wkflw_key');
+					var dsgSourceDivId = $(this).closest("div[class*='mainproc']").attr('dsgarea');
+					$('#' + dsgSourceDivId).trigger(wkflowdsg_defaults.wkflowParameterClickEvent,
+							[{wkflw_key:dsgWorkflowKey}]);
 				});
 				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.addTaskEventBinder,'click',function(e) {
 					console.debug(e);
@@ -202,6 +217,17 @@
 				};
 				
 				var zTreeObj=  $.fn.zTree.init($("#" + wkflowInfoZtreeDivId), setting, zTreeNodes);
+				var dsgSourceDivId = $("#" + wkflowInfoZtreeDivId).attr('dsgarea');
+				var dsgWorkflowKey= $("#" + wkflowInfoZtreeDivId).attr('wkflw_key');
+				var wkflowInfoContainerDivId= $("#" + wkflowInfoZtreeDivId).attr('wkflwInfoContainerDiv');
+				var wkflowInfoZtreeDivId= $("#" + wkflowInfoZtreeDivId).attr('wkflwZtreeDiv');
+				
+				console.debug(dsgSourceDivId);
+				$('#' + dsgSourceDivId).trigger(wkflowdsg_defaults.wkflowInfoChangeDoneEvent,
+						[{wkflw_key:dsgWorkflowKey,
+							containerId:wkflowInfoContainerDivId,
+							ztreeDivId:wkflowInfoZtreeDivId}]);
+				
 			}
 	
 			

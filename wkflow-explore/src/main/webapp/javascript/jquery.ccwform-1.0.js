@@ -25,10 +25,23 @@
 				              "    <div id='contWrap'>" +setSource + "</div>" +
 				              "    <div id='mdFooter'>" +
 				              "        <input id='mdCancel' class='button' srcSec='" + srcSectionId + "' type='Submit' value='Cancel'>" +
-				              "        <input id='mdConfirm' class='button' srcSec='" + srcSectionId + "' type='Submit' value='Submit'>" +
+				              "        <input id='mdConfirm' class='button' hasGrid='" + _setting.hasGrid + "' srcSec='" + srcSectionId + "' type='Submit' value='Submit'>" +
 				              "    </div>"
 				              "</div>";
 				$('body').append(theForm);
+				if (_setting.hasGrid == true) {
+					$("#jsGrid").jsGrid(_setting.gridSettings);
+					
+					if (_setting.width!="undefined"){
+						$('#mdWindow').width(_setting.width);
+						var mdWidth = $('#mdWindow').width();
+						console.debug("mdWidth:" + mdWidth);
+						var mdMarginLeft = (mdWidth/2 * -1) + "px";
+						$("#mdWindow").css("margin-left", mdMarginLeft );
+					}
+				}
+				
+				
 				var mdHeight = $('#mdWindow').height();
 				console.debug("mdHeight:" + mdHeight);
 				var mdMarginTop = (mdHeight/2 * -1) + "px";
@@ -65,7 +78,15 @@
 			        	console.log("loop["+ i+ "]", textAreaList[i].id + "-"+ textAreaList[i].value)
 			        	inputData[textAreaList[i].id]=textAreaList[i].value;
 			        }
-			        $('#' + srcSectionId).trigger(ccwform_defaults.afterSubmitEvent,[{dialogInputData:inputData}]);
+			        var hasGrid = $(this).attr('hasGrid');
+			        var wkflw_key = $('#modelInclude').attr('wkflw_key');;
+			        console.debug(hasGrid);
+			        if (hasGrid=="true") {
+			        	console.debug("Hi,this is grid");
+			        	var data = $('#jsGrid').jsGrid('option','data');
+			        	console.debug(data);
+			        }
+			        $('#' + srcSectionId).trigger(ccwform_defaults.afterSubmitEvent,[{dialogInputData:inputData,hasGrid:hasGrid,gridData:data,wkflw_key:wkflw_key}]);
 			        closeDialog();
 			    });
 				$('#mdCancel').on('click',function(){
@@ -75,6 +96,7 @@
 				function closeDialog() {
 					$('#mdWindow, #mdOverlay').stop().animate({opacity:'0'},_setting.fadeTime,function(){
 						$('#mdWindow, #mdOverlay').remove();
+						$('#modelInclude').remove();
 					});
 				}
 			}

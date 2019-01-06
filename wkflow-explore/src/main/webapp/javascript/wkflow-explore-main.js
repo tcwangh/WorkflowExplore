@@ -13,13 +13,22 @@ function eventWindowLoaded(){
 	console.log('頁面初始化完畢');
 	
 	_theAppContext = appStart();
+	_theAppContext.loadWorkflowFromLocalStorage();
 }
 function appStart() {
 	var designAreaForTabs="tabContainer";
 	var LS_KEYS="LS_KEYS";
+	var LS_KEY_HEAD="LS_KEY_";
 	var LS_KEYS_ARRAY=[];
-	//var workflowTemplatesMap = {};
 	var workflowDefinitionMap = {};
+	var WORKFLOW_VARIABLE_TYPES = [
+        { Name: "java.lang.String", Id: 0 },
+        { Name: "java.util.collection", Id: 1 }
+    ];
+	var WORKFLOW_VARIABLE_CATEGORIES = [
+        { Name: "ACT_PARM_NAME", Id: 0 },
+        { Name: "PARM_NAME", Id: 1 }
+    ];
 	var theAppObj = {
 			init: function() {
 				this.initFuncIcons();
@@ -27,7 +36,6 @@ function appStart() {
 				$('#createWorkflowImg').on('click',jQuery.proxy(this,'newFile',this));
 				$('#downloadImg').on('click',jQuery.proxy(this,'downloadBPMN',this));
 				var displayAreaInfo = this.getDisplayInfo();
-				this.loadWorkflowFromLocalStorage();
 				return this;
 			},
 			initFuncIcons : function () {
@@ -65,6 +73,7 @@ function appStart() {
 				});
 				$('#tabContainer').bind('ccwtab.TabDeleteComplete',function(e,data){
 					_theAppContext.tabDeleteDone(e,data);
+					_theAppContext.removeWorkflowFromLocalStorage(data.removedTabId);
 				});
 				$('#tabContainer').bind('ccwtab.TabChangeComplete',function(e,data){
 					_theAppContext.tabChangeDone(e,data);
@@ -117,7 +126,7 @@ function appStart() {
 				var dsgTabDivId= "tab_" + flowTab;
 				var workflowDefinitionData= workflowDefinitionMap[theNewTabId];
 				console.debug(workflowDefinitionData);
-				var dsgSectionId = 	"<section id='" + dsgAreaId + "' class='designAreaContainer' >" + 
+				var dsgSectionId = 	"<section id='" + dsgAreaId + "' class='designAreaContainer' wkflw_key='" + theNewTabId +"'>" + 
 										"<div id='" + dsgAreaLeftDivId + "' class='designAreaLeft' ></div>" +
 										"<div id='" + dsgAreaRightDivId + "' class='designAreaRight' ></div>" + 
 									"</section>";
@@ -132,18 +141,23 @@ function appStart() {
 				});
 				$('#' + dsgAreaId).bind('wkflowdsg.wkflowInfoChangeReq',function(e,data){
 					console.debug("ChangeWorkflowInfoRequest-"+ data.wkflw_key);
-					//console.debug(e);
-					//console.debug(data);
-					//_theAppContext.tabChangeDone(e,data);
 					var workflowDefinitionData= workflowDefinitionMap[data.wkflw_key];
 					_theAppContext.showWorkflowInfoModifyForm(workflowDefinitionData,_theAppContext.displayWorkflowInfoToZtree);
 				});
-				
+				$('#' + dsgAreaId).bind('wkflowdsg.wkflowInfoChangeDone',function(e,data){
+					//console.debug(e);
+					//console.debug(data);
+					_theAppContext.updateWorkflowToLocalStorage(data.wkflw_key);
+				});
+				$('#' + dsgAreaId).bind('wkflowdsg.wkflowParameterClick',function(e,data){
+					console.debug(e);
+					console.debug(data);
+					_theAppContext.showWorkflowGlobalParameterForm(data.wkflw_key,_theAppContext.updateWorkflowGlobalParameters);
+				});
 			},
 			newFile : function (obj) {
 				var newWrkflowId = obj.getFormattedDate();
 				console.debug("Create New Workflow ID:" + newWrkflowId);
-				var workflowTemplateInfo = _theAppContext.getNewWorkflowTemplateObj(newWrkflowId);
 				var workflowDefinition = new WorkflowDefinition({"WKFLW_KEY":newWrkflowId});
 				console.debug(workflowDefinition);
 				workflowDefinitionMap[newWrkflowId]=workflowDefinition;
@@ -169,25 +183,72 @@ function appStart() {
 				console.debug("updateWorkflowToLocalStorage["+LS_KEYS+"]:" + keyList);
 				window.localStorage.removeItem(LS_KEYS);
 				window.localStorage.setItem(LS_KEYS, keyList);
+				var workflowDefinitionObj= workflowDefinitionMap[workflowId].getJsonObject();
+				console.debug(workflowDefinitionObj)
+				var LS_KEY_NAME= LS_KEY_HEAD + workflowId;
+				window.localStorage.setItem(LS_KEY_NAME, JSON.stringify(workflowDefinitionObj));
 			},
 			loadWorkflowFromLocalStorage:function(){
 				var workflowKeys = window.localStorage.getItem(LS_KEYS);
 				console.debug(workflowKeys);
-				if (workflowKeys!==null){
-					var res = workflowKeys.split(",");
-					console.debug(res.length);
+				if (workflowKeys!==null && workflowKeys!==''){
+					var workflowKeyArray = workflowKeys.split(",");
+					console.debug(workflowKeyArray.length);
+					for (var i=0;i<workflowKeyArray.length;i++) {
+						if (workflowKeyArray[i] !=null) {
+							var tmpLocalStorageWorkflowDataKey = LS_KEY_HEAD+workflowKeyArray[i];
+							var tmpLocalStorageworkflowData = window.localStorage.getItem(tmpLocalStorageWorkflowDataKey);
+							console.debug(tmpLocalStorageWorkflowDataKey);
+							console.debug(tmpLocalStorageworkflowData);
+							var workflowDefinition = new WorkflowDefinition({"WKFLW_KEY":workflowKeyArray[i]});
+							workflowDefinition.parseJson(tmpLocalStorageworkflowData);
+							LS_KEYS_ARRAY.push(workflowKeyArray[i]);
+							workflowDefinitionMap[workflowKeyArray[i]]=workflowDefinition;
+							$('#tabContainer').ccwtab('addtab',{
+								newTabId:workflowKeyArray[i],
+								displayName:workflowKeyArray[i],
+								closeTab:'enabled'
+							});
+						}
+					}
+					
+				}
+				
+				var localStorageKeys = Object.keys(localStorage);
+				for (var i=0;i<localStorageKeys.length;i++) {
+					console.debug(localStorageKeys[i]);
 				}
 				
 			},
-			removeWorkflowFromLocalStorage:function(){
-				windowlocalStorage.removeItem(LS_KEYS);
+			removeWorkflowFromLocalStorage:function(workflowId){
+				var index = LS_KEYS_ARRAY.indexOf(workflowId);
+				console.debug("removeWorkflowFromLocalStorage:" + workflowId + "," + index);
+				if (index>-1) {
+					console.debug(LS_KEYS_ARRAY);
+					console.debug(workflowDefinitionMap);
+					LS_KEYS_ARRAY.splice(index,1);
+					delete workflowDefinitionMap[workflowId];
+					var keyLen = LS_KEYS_ARRAY.length;
+					var keyList="";
+					for(var i=0;i<keyLen;i++){
+						if (i==keyLen-1) {
+							keyList += LS_KEYS_ARRAY[i];
+						}else {
+							keyList += LS_KEYS_ARRAY[i]+",";
+						}
+					}
+					console.debug("removeWorkflowFromLocalStorage["+LS_KEYS+"]:" + keyList);
+					window.localStorage.removeItem(LS_KEYS);
+					window.localStorage.setItem(LS_KEYS, keyList);
+					var LS_KEY_NAME= LS_KEY_HEAD + workflowId;
+					window.localStorage.removeItem(LS_KEY_NAME);
+				}
 			},
 			downloadBPMN : function (obj) {
 				console.debug(obj);
 				console.debug("Hi,Let's download BPMN");
 				var theActiveTabInfo = $('#' + designAreaForTabs).ccwtab('getActiveTab',{});
 				console.debug(theActiveTabInfo);
-				//var workflowTemplateInfo = workflowTemplatesMap[theActiveTabInfo.currentTabId];
 				var workflowDefinitionData= workflowDefinitionMap[theActiveTabInfo.currentTabId];
 				console.debug(workflowDefinitionData.getJsonObject());
 				/*
@@ -304,7 +365,8 @@ function appStart() {
 				$('#modelInclude').ccwform('init',{
 					inputSrc:inputSrc,
 					dialogHeader:"設定樣板資訊",
-					
+					hasGrid:false,
+					gridSettings:{}
 				});
 				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
 					console.debug(data);
@@ -324,12 +386,62 @@ function appStart() {
 				workflowDefinitionData.templateData.ACT_PROC_ID = data.dialogInputData.input_bpmnProcId;
 				workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME = data.dialogInputData.input_bpmnFileName;
 				console.debug(workflowDefinitionData);
+				//updateWorkflowToLocalStorage(data.dialogInputData.input_wkflwKey);
 				var dsgAreaId = data.dialogInputData.input_wkflwKey + "_DesignArea";
 				$('#' + dsgAreaId).wkflowdsg('updateWorkflowInfo',{
 					wkflowId:data.dialogInputData.input_wkflwKey,
 					dsgAreaId:dsgAreaId,
 					workflowDefinitionData:workflowDefinitionData
 				});
+			},
+			showWorkflowGlobalParameterForm:function(wkflowKey,callback){
+				console.debug(wkflowKey);
+				var wkflwInfoModifyDialog = "<section id='modelInclude' wkflw_key='" + wkflowKey + "'></section>";
+				$('body').append(wkflwInfoModifyDialog);
+				var workflowDefinitionData = workflowDefinitionMap[wkflowKey]
+				//var clients = [
+			    //    { "Name": "FAB_CODE", "Type": "java.lang.String", "Memo": "Fab Code", "Category": "ACT_PARM_NAME"},
+			    //    { "Name": "LOT_ID", "Type": "java.lang.String", "Memo": "Lot Id", "Category": "ACT_PARM_NAME"},
+			    //    { "Name": "TOOL_ID", "Type": "java.lang.String", "Memo": "Tool Id", "Category": "ACT_PARM_NAME"},
+			    //];
+				
+				var gridSettings = {
+						width: "100%",
+						height: "400px",
+						inserting: true,
+						editing: true,
+						sorting: true,
+						paging: true,
+			 			data: workflowDefinitionData.templateEntities,
+			 			fields: [
+							{ title: "Name", name: "name", type: "text", width: 150, validate: "required" },
+							{ title: "Type", name: "type", type: "select", items:WORKFLOW_VARIABLE_TYPES,valueField: "Name", textField: "Name", width: 150 },
+							{ title: "Category", name: "category", type: "select", items: WORKFLOW_VARIABLE_CATEGORIES, valueField: "Name", textField: "Name",width:150 },
+							{ title: "Memo", name: "memo", type: "text", width: 200 },
+							{ type: "control" }
+						]};
+				var inputSrc = 	"<div id='jsGrid' wkflw_key='" + wkflowKey + "'></div>";
+				
+				$('#modelInclude').ccwform('init',{
+					inputSrc:inputSrc,
+					dialogHeader:"Setup Workflow Global Parameters",
+					hasGrid:true,
+					width:"750px",
+					gridSettings:gridSettings
+				});
+				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
+					console.debug(data);
+					callback(data);
+				});
+			},
+			updateWorkflowGlobalParameters:function(data){
+				console.debug(data);
+				if (data.gridData.length > 0) {
+					console.debug(data.wkflw_key + ";" + data.gridData);
+					var workflowDefinitionData = workflowDefinitionMap[data.wkflw_key];
+					workflowDefinitionData.templateEntities = data.gridData;
+					_theAppContext.updateWorkflowToLocalStorage(data.wkflw_key);
+				}
 			}
 	}
 	return theAppObj.init();

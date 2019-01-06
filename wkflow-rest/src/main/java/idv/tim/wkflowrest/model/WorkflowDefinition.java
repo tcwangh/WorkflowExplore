@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class WorkflowDefinition {
 	
 	private TemplateData templateData;
+	private ArrayList<TemplateEntity> templateEntities;
 	private ArrayList<WorkflowInputVariable> inputVariables;
 	private ArrayList<WorkflowInputValues> inputValues;
 
@@ -31,5 +32,15 @@ public class WorkflowDefinition {
 	public void setInputValues(ArrayList<WorkflowInputValues> inputValues) {
 		this.inputValues = inputValues;
 	}
+
+	public ArrayList<TemplateEntity> getTemplateEntities() {
+		return templateEntities;
+	}
+
+	public void setTemplateEntities(ArrayList<TemplateEntity> templateEntities) {
+		this.templateEntities = templateEntities;
+	}
+	
+	
 	
 }

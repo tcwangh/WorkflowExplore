@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import idv.tim.wkflowrest.model.InstanceCreateResult;
 import idv.tim.wkflowrest.model.WorkflowCreateResult;
 import idv.tim.wkflowrest.model.WorkflowDefinition;
+import idv.tim.wkflowrest.model.WorkflowModelReq;
 import idv.tim.wkflowrest.services.WorkflowDataService;
 
 @RestController
@@ -56,6 +57,10 @@ public class WkflowController {
 		return theResult;
 	}
 	
-	
+	@RequestMapping(value = "/workflow-model", method = RequestMethod.POST)
+	public void getWorkflowModel(@RequestBody WorkflowModelReq req,Locale locale,Model model) {
+		logger.info("getWorkflowModel start");
+		logger.info("req is " + req.toString());
+	}
 
 }
