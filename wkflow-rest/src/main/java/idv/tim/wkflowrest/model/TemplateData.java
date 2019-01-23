@@ -86,5 +86,19 @@ public class TemplateData {
 	public void setWorkflowCategory(String workflowCategory) {
 		this.workflowCategory = workflowCategory;
 	}
+	public String toString() {
+		return String.format("%1$-12s", "WorkflowKey:") + String.format("%1$-15s",this.workflowKey) + "\n" +
+			   String.format("%1$-12s", "WorkflowId:") + String.format("%1$-15s",this.workflowId) + "\n" +
+			   String.format("%1$-12s", "WorkflowName:") + String.format("%1$-15s",this.workflowName) + "\n" +
+			   String.format("%1$-12s", "WorkflowCategory:") + String.format("%1$-15s",this.workflowCategory) + "\n" +
+			   String.format("%1$-12s", "WorkflowReason:") + String.format("%1$-15s",this.workflowReason) + "\n" +
+			   String.format("%1$-12s", "workflowDescription:") + String.format("%1$-15s",this.workflowDescription) + "\n" +
+			   String.format("%1$-12s", "workflowStatus:") + String.format("%1$-15s",this.workflowStatus) + "\n" +
+			   String.format("%1$-12s", "workflowPrivilegeId:") + String.format("%1$-15s",this.workflowPrivilegeId) + "\n" +
+			   String.format("%1$-12s", "claimUser:") + String.format("%1$-15s",this.claimUser) + "\n" +
+			   String.format("%1$-12s", "claimTime:") + String.format("%1$-15s",this.claimTime) + "\n" +
+			   String.format("%1$-12s", "workflowActivitiProcessId:") + String.format("%1$-15s",this.workflowActivitiProcessId) + "\n" +
+			   String.format("%1$-12s", "workflowActivitiDefFileName:") + String.format("%1$-15s",this.workflowActivitiDefFileName);
+	}
 	
 }

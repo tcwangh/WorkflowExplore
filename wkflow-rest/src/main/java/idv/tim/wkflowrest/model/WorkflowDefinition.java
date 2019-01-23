@@ -6,6 +6,8 @@ public class WorkflowDefinition {
 	
 	private TemplateData templateData;
 	private ArrayList<TemplateEntity> templateEntities;
+	private ArrayList<TaskData> taskList;
+	private ArrayList<LinkData> linkList;
 	private ArrayList<WorkflowInputVariable> inputVariables;
 	private ArrayList<WorkflowInputValues> inputValues;
 
@@ -39,6 +41,22 @@ public class WorkflowDefinition {
 
 	public void setTemplateEntities(ArrayList<TemplateEntity> templateEntities) {
 		this.templateEntities = templateEntities;
+	}
+
+	public ArrayList<TaskData> getTaskList() {
+		return taskList;
+	}
+
+	public void setTaskList(ArrayList<TaskData> taskList) {
+		this.taskList = taskList;
+	}
+
+	public ArrayList<LinkData> getLinkList() {
+		return linkList;
+	}
+
+	public void setLinkList(ArrayList<LinkData> linkList) {
+		this.linkList = linkList;
 	}
 	
 	

@@ -20,12 +20,35 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import idv.tim.wkflowrest.model.BPMNDeployStatus;
+import idv.tim.wkflowrest.model.LinkData;
+import idv.tim.wkflowrest.model.TaskData;
 import idv.tim.wkflowrest.model.WorkflowDefinition;
 
 @Service
 public class BpmnGenerator {
 	private static final Logger logger = LoggerFactory.getLogger(BpmnGenerator.class);
+	public static final String TASK_TYPE_START = "start";
+	public static final String TASK_TYPE_END = "end";
 	
+	public BpmnModel createBpmnModel(WorkflowDefinition theWorkflowDefinition) {
+		BpmnModel model = new BpmnModel();
+		Process process = new Process();
+		model.addProcess(process);
+		process.setId(theWorkflowDefinition.getTemplateData().getWorkflowId());
+		process.setName(theWorkflowDefinition.getTemplateData().getWorkflowName());
+		for (int i=0;i<theWorkflowDefinition.getTaskList().size();i++) {
+			if (TASK_TYPE_START.equals(theWorkflowDefinition.getTaskList().get(i).getTaskType())){
+				process.addFlowElement(createStartEvent(theWorkflowDefinition.getTaskList().get(i)));
+			}else if (TASK_TYPE_END.equals(theWorkflowDefinition.getTaskList().get(i).getTaskType())){
+				process.addFlowElement(createEndEvent(theWorkflowDefinition.getTaskList().get(i)));
+			}
+		}
+		for (int i=0;i<theWorkflowDefinition.getLinkList().size();i++) {
+			process.addFlowElement(createSequenceFlow(theWorkflowDefinition.getLinkList().get(i)));
+		}
+		new BpmnAutoLayout(model).execute();
+		return model;
+	}
 	public BPMNDeployStatus createDynamicProcess(WorkflowDefinition theWorkflowDefinition) {
 		BPMNDeployStatus theDeployStatus = new BPMNDeployStatus();
 		BpmnModel model = new BpmnModel();
@@ -102,6 +125,13 @@ public class BpmnGenerator {
 		flow.setTargetRef(to);
 		return flow;
 	}
+	private SequenceFlow createSequenceFlow(LinkData theLink) {
+		SequenceFlow flow = new SequenceFlow();
+		flow.setId(theLink.getLinkId());
+		flow.setSourceRef(theLink.getFromTaskId());
+		flow.setTargetRef(theLink.getToTaskId());
+		return flow;
+	}
 	
 	private StartEvent createStartEvent(String id) {
 		StartEvent startEvent = new StartEvent();
@@ -109,9 +139,27 @@ public class BpmnGenerator {
 		return startEvent;
 	}
 	
+	private StartEvent createStartEvent(TaskData theTaskData) {
+		StartEvent startEvent = new StartEvent();
+		startEvent.setId(theTaskData.getTaskId());
+		startEvent.setName(theTaskData.getTaskName());
+		startEvent.setNotExclusive(false);
+		startEvent.setAsynchronous(true);
+		return startEvent;
+	}
+	
 	private EndEvent createEndEvent(String id) {
 		EndEvent endEvent = new EndEvent();
 		endEvent.setId(id);
+		return endEvent;
+	}
+	
+	private EndEvent createEndEvent(TaskData theTaskData) {
+		EndEvent endEvent = new EndEvent();
+		endEvent.setId(theTaskData.getTaskId());
+		endEvent.setName(theTaskData.getTaskName());
+		endEvent.setNotExclusive(false);
+		endEvent.setAsynchronous(true);
 		return endEvent;
 	}
 

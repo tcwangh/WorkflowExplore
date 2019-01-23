@@ -251,6 +251,12 @@ function appStart() {
 				console.debug(theActiveTabInfo);
 				var workflowDefinitionData= workflowDefinitionMap[theActiveTabInfo.currentTabId];
 				console.debug(workflowDefinitionData.getJsonObject());
+				
+				var dsgAreaId = theActiveTabInfo.currentTabId + "_DesignArea";
+				var taskSettings = $('#' + dsgAreaId).wkflowdsg('getTaskSettings',{});
+				console.debug(taskSettings);	
+				workflowDefinitionData.updateTaskList(taskSettings);
+				workflowDefinitionData.updateLinkList(taskSettings);
 				/*
 				var search = {	"templateData": {	"workflowKey":"WKFLW000001",
 	 				  								"workflowId":"dynamicStartEndProcess",
@@ -270,6 +276,14 @@ function appStart() {
 				};
 				*/
 				S_downloadBPMN_SQL(workflowDefinitionData.getJsonObject());   
+			},
+			downloadBPMNDone:function(obj){
+				console.debug("downloadBPMNDone");
+				console.debug(obj);
+				var zip = new JSZip();
+				zip.file(obj.bpmnXmlFileName, obj.bpmnXmlContent);
+				var blob = zip.generate({type:"blob"});
+				saveAs(blob, "hello.zip");
 			},
 			tabCreateDone : function (e,data) {
 				console.debug(e);
@@ -355,11 +369,7 @@ function appStart() {
 		                    			"<td><label id='lbl_bpmnProcId' class='form_label'>BPMN流程編號</label></td>" + 
 		                    			"<td><input id='input_bpmnProcId' type='text' value='" + workflowDefinitionData.templateData.ACT_PROC_ID + "' class='textbox_M'></td>" +
 		                    		"</tr>" +
-		                    		"<tr>" +
-	                    				"<td><label id='lbl_bpmnFileName' class='form_label'>BPMN檔案名稱</label></td>" + 
-	                    				"<td><input id='input_bpmnFileName' type='text' disabled value='" + workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME + "' class='textbox_L'></td>" +
-	                    			"</tr>" +
-			                    "</table>";
+		                    	"</table>";
 				
 				$('body').append(wkflwInfoModifyDialog);
 				$('#modelInclude').ccwform('init',{
@@ -384,7 +394,7 @@ function appStart() {
 				workflowDefinitionData.templateData.WKFLW_PRIV_ID = data.dialogInputData.input_wkflwPrivId;
 				workflowDefinitionData.templateData.CALIM_USER = data.dialogInputData.input_wkflwClaimUser;
 				workflowDefinitionData.templateData.ACT_PROC_ID = data.dialogInputData.input_bpmnProcId;
-				workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME = data.dialogInputData.input_bpmnFileName;
+				workflowDefinitionData.templateData.ACT_PROC_DEF_FILE_NAME = data.dialogInputData.input_wkflwName +  ".bpmn20.xml";
 				console.debug(workflowDefinitionData);
 				//updateWorkflowToLocalStorage(data.dialogInputData.input_wkflwKey);
 				var dsgAreaId = data.dialogInputData.input_wkflwKey + "_DesignArea";

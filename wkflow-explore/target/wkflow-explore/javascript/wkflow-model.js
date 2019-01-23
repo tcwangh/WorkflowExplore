@@ -6,6 +6,8 @@
 function WorkflowDefinition(config) {
 	this.templateData = {};
 	this.templateEntities = [];
+	this.taskList = [];
+	this.linkList = [];
 	this.templateData.WKFLW_KEY=config.WKFLW_KEY;
 	this.templateData.WKFLW_ID=config.WKFLW_KEY;
 	this.templateData.WKFLW_NAME="TBD";
@@ -17,7 +19,7 @@ function WorkflowDefinition(config) {
 	this.templateData.CALIM_USER="";
 	this.templateData.CALIM_TIME="%SYS_DATE%";
 	this.templateData.ACT_PROC_ID="";
-	this.templateData.ACT_PROC_DEF_FILE_NAME="";
+	this.templateData.ACT_PROC_DEF_FILE_NAME=this.templateData.WKFLW_NAME + ".bpmn20.xml";
 }
 
 WorkflowDefinition.prototype.updateTemplateData = function(config) {
@@ -29,9 +31,14 @@ WorkflowDefinition.prototype.updateTemplateData = function(config) {
 	this.templateData.WKFLW_PRIV_ID = config.WKFLW_PRIV_ID
 	this.templateData.CALIM_USER = config.CALIM_USER
 	this.templateData.ACT_PROC_ID = config.ACT_PROC_ID
-	this.templateData.ACT_PROC_DEF_FILE_NAME = config.ACT_PROC_DEF_FILE_NAME
+	this.templateData.ACT_PROC_DEF_FILE_NAME = this.templateData.WKFLW_NAME + ".bpmn20.xml";
 }
-
+WorkflowDefinition.prototype.updateTaskList = function(config) {
+	this.taskList = config.taskList;
+}
+WorkflowDefinition.prototype.updateLinkList = function(config) {
+	this.linkList = config.linkList;
+}
 WorkflowDefinition.prototype.getJsonObject = function() {
 	var theObj = { "templateData": 	{	"workflowKey":this.templateData.WKFLW_KEY,
 										"workflowId":this.templateData.WKFLW_KEY,
@@ -47,9 +54,10 @@ WorkflowDefinition.prototype.getJsonObject = function() {
 										"workflowActivitiDefFileName":this.templateData.ACT_PROC_DEF_FILE_NAME
 									},
 					"templateEntities" : this.templateEntities,
+					"taskList":this.taskList,
+					"linkList":this.linkList,
 					"inputVariables":[{"name":"lotId","type":"java.lang.String","memo":"hello"}],
 					"inputValues":[{"name":"lotId","type":"java.lang.String","value":"Tim00001.00"}]
-			
 	};
 	return theObj;
 }
@@ -69,7 +77,6 @@ WorkflowDefinition.prototype.parseJson = function(jsonString) {
 	this.templateData.CALIM_TIME=jsonObj.templateData.claimTime;
 	this.templateData.ACT_PROC_ID=jsonObj.templateData.workflowActivitiProcessId;
 	this.templateData.ACT_PROC_DEF_FILE_NAME=jsonObj.templateData.workflowActivitiDefFileName;
-	
 	this.templateEntities = jsonObj.templateEntities;
 	
 	return this;

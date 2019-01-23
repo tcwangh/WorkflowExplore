@@ -32,9 +32,9 @@ public class TemplateEntity {
 	}
 	public String toString() {
 		
-		return String.format("%1$-35s","Name:") + String.format("%1$-35s",this.name) + 
-			   String.format("%1$-35s","Type:") + String.format("%1$-35s",this.type) +
-			   String.format("%1$-35s","Category:") + String.format("%1$-35s",this.category) +
+		return String.format("%1$-10s","Name:") + String.format("%1$-15s",this.name) + 
+			   String.format("%1$-10s","Type:") + String.format("%1$-15s",this.type) +
+			   String.format("%1$-15s","Category:") + String.format("%1$-20s",this.category) +
 			   String.format("%1$-35s","Memo:") + String.format("%1$-35s",this.memo);
 	}
 	

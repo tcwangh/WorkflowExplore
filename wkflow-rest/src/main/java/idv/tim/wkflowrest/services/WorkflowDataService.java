@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import idv.tim.wkflowrest.model.BPMNDeployStatus;
 import idv.tim.wkflowrest.model.InstanceCreateResult;
 import idv.tim.wkflowrest.model.WorkflowCreateResult;
 import idv.tim.wkflowrest.model.WorkflowDefinition;
+import idv.tim.wkflowrest.model.WorkflowDeployResult;
 import idv.tim.wkflowrest.model.WorkflowInputValues;
 import idv.tim.wkflowrest.persistence.WorkflowTemplateEntyRepository;
 import idv.tim.wkflowrest.persistence.WorkflowTemplateRepository;
@@ -39,6 +42,18 @@ public class WorkflowDataService {
 	private WorkflowTemplateEntyRepository theWorkflowTemplateEntyRepository;
 	@Autowired
 	private BpmnGenerator bpmnGenerator;
+	
+	@Transactional
+	public WorkflowDeployResult deployWorkflow(WorkflowDefinition theWorkflowDefinition,BpmnModel theModel) {
+		ProcessEngine theEngine = ProcessEngines.getDefaultProcessEngine();
+		RepositoryService repositoryService = theEngine.getRepositoryService();
+		String deploymentId = repositoryService.createDeployment().name(theWorkflowDefinition.getTemplateData().getWorkflowCategory())
+				.addBpmnModel(theWorkflowDefinition.getTemplateData().getWorkflowActivitiDefFileName(), theModel).deploy().getId();
+		WorkflowDeployResult theResult = new WorkflowDeployResult();
+		theResult.setActivitiDeploymentId(deploymentId);
+		logger.info("Deployment id " + deploymentId);
+		return theResult;
+	}
 	
 	@Transactional
 	public WorkflowCreateResult createWorkflowDefinitionData(WorkflowDefinition theWorkflowDefinition) {

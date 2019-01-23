@@ -22,7 +22,7 @@
 				
 				var newProcess ="<div class='mainproc' wkflw_key='" + options.wkflowId + "' dsgarea='" + options.dsgAreaId + "'>" +
 								"	<div class='mainproc-pic'><img id='flowStart' class='flowIcon', src='images/start.png' title='Start the workflow'></div>" +
-								"   <div class='startend'>" +
+								"   <div class='startend' dsgcomp='Y' comptype='start'>" +
 								"       <div class='task-title'>" +
 								"       	<table class='icon_table'>" + 
 								"           	<tr>" + 
@@ -43,7 +43,7 @@
 								"</div>" + 
 								"<div class='mainproc' wkflw_key='" + options.wkflowId + "' dsgarea='" + options.dsgAreaId + "'>" +
 								"	<div class='mainproc-pic'><img id='flowEnd' class='flowIcon', src='images/end.png' title='End of the workflow'></div>" +
-								"	<div class='startend'>" +
+								"	<div class='startend' dsgcomp='Y' comptype='end'>" +
 								"       <div class='task-title'>" +
 								"       	<table class='icon_table'>" + 
 								"           	<tr>" + 
@@ -228,9 +228,56 @@
 							containerId:wkflowInfoContainerDivId,
 							ztreeDivId:wkflowInfoZtreeDivId}]);
 				
+			},
+			getTaskSettings:function(options){
+				var _setting = $(this).data(wkflowdsg_defaults.componentSettings);
+				console.debug(_setting);
+				var procList = $("#" +_setting.configDivId).find("div[class='mainproc']");
+				console.debug(procList);
+				var taskList = [];
+				var linkList = [];
+				var preTaskId = "";
+				var currentTaskId = "";
+				for (var i=0;i<procList.length;i++) {
+					var tmpComponent = $(procList[i]).find("div[dsgcomp='Y']");
+					if (tmpComponent.length > 0) {
+						var tmpCompType = tmpComponent.attr('comptype');
+						var tmpTaskId = "";
+						var tmpTaskType = "";
+						var tmpTaskName = "";
+						if (tmpCompType=="start" || tmpCompType=="end") {
+							tmpTaskId = tmpCompType;
+							tmpTaskType = tmpCompType;
+							tmpTaskName = tmpCompType;
+							currentTaskId = tmpTaskId;
+						} 
+						var tmpTaskInfo = {
+								taskId : tmpTaskId,
+								taskType : tmpTaskType,
+								taskName : tmpTaskName
+						};
+						taskList.push(tmpTaskInfo);
+						if (preTaskId!="" && preTaskId != currentTaskId){
+							var tmpLinkId = preTaskId+currentTaskId;
+							var tmpLinkInfo = {
+									linkId:tmpLinkId,
+									fromTaskId:preTaskId,
+									toTaskId:currentTaskId
+							};
+							linkList.push(tmpLinkInfo);
+						}
+						preTaskId=currentTaskId;
+					}
+				}
+				//console.debug(taskList);
+				//console.debug(linkList);
+				var taskSettings = {
+						taskList : taskList,
+						linkList : linkList
+				};
+				return taskSettings;
+				
 			}
-	
-			
 	}
 	
 	$.fn.wkflowdsg=function(method) {

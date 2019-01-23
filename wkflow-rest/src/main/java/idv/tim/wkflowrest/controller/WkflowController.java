@@ -3,6 +3,9 @@ package idv.tim.wkflowrest.controller;
 import java.net.URL;
 import java.util.Locale;
 import javax.annotation.PostConstruct;
+
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.apache.log4j.Logger;
@@ -16,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import idv.tim.wkflowrest.model.InstanceCreateResult;
 import idv.tim.wkflowrest.model.WorkflowCreateResult;
 import idv.tim.wkflowrest.model.WorkflowDefinition;
+import idv.tim.wkflowrest.model.WorkflowDeployResult;
 import idv.tim.wkflowrest.model.WorkflowModelReq;
+import idv.tim.wkflowrest.model.WorkflowModelRes;
+import idv.tim.wkflowrest.services.BpmnGenerator;
 import idv.tim.wkflowrest.services.WorkflowDataService;
 
 @RestController
@@ -58,9 +64,30 @@ public class WkflowController {
 	}
 	
 	@RequestMapping(value = "/workflow-model", method = RequestMethod.POST)
-	public void getWorkflowModel(@RequestBody WorkflowModelReq req,Locale locale,Model model) {
+	public WorkflowModelRes getWorkflowModel(@RequestBody WorkflowModelReq req,Locale locale,Model model) {
 		logger.info("getWorkflowModel start");
 		logger.info("req is " + req.toString());
+		BpmnGenerator theBpmnGenerator = new BpmnGenerator();
+		BpmnModel theBpmnModel = theBpmnGenerator.createBpmnModel(req.getWorkflowDefinition());
+		BpmnXMLConverter converter = new BpmnXMLConverter();
+		byte[] bytes = converter.convertToXML(theBpmnModel);
+		String bpmnXmlContent = new String(bytes);
+		//String bpmnXmlFilename = req.getWorkflowDefinition().getTemplateData().getWorkflowName() + ".bpmn20.xml";
+		String bpmnXmlFilename = req.getWorkflowDefinition().getTemplateData().getWorkflowActivitiDefFileName();
+		logger.info("theBpmnModel XML File Name is " + bpmnXmlFilename);
+		logger.info("theBpmnModel XML Content is " + bpmnXmlContent);
+		WorkflowModelRes theResult = new WorkflowModelRes();
+		theResult.setBpmnXmlContent(bpmnXmlContent);
+		theResult.setBpmnXmlFileName(bpmnXmlFilename);
+		if ("Y".equals(req.getAutoDeployment())) {
+			WorkflowDeployResult theDeployResult = theWorkflowDataService.deployWorkflow(req.getWorkflowDefinition(), theBpmnModel);
+			theResult.setAutoDeployment(req.getAutoDeployment());
+			theResult.setTheDeployResult(theDeployResult);
+		}else {
+			theResult.setAutoDeployment("N");
+		}
+		
+		return theResult;
 	}
 
 }

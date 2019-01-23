@@ -17,7 +17,8 @@ function S_downloadBPMN_SQL(workflowData){
 	    }
 	});*/
 	var req = {
-			"workflowDefinition":workflowData
+			"workflowDefinition":workflowData,
+			"autoDeployment":"Y"
 	}
 	console.debug(req);
 	$.ajax({
@@ -37,4 +38,5 @@ function S_downloadBPMN_SQL(workflowData){
 
 function R_downloadBPMN_SQL(result){
 	console.debug(result);
+	_theAppContext.downloadBPMNDone(result);
 }
