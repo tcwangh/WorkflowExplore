@@ -78,6 +78,11 @@ WorkflowDefinition.prototype.parseJson = function(jsonString) {
 	this.templateData.ACT_PROC_ID=jsonObj.templateData.workflowActivitiProcessId;
 	this.templateData.ACT_PROC_DEF_FILE_NAME=jsonObj.templateData.workflowActivitiDefFileName;
 	this.templateEntities = jsonObj.templateEntities;
-	
+	if (jsonObj.taskList!=null) {
+		this.taskList = jsonObj.taskList;
+	}
+	if (jsonObj.linkList!=null) {
+		this.linkList = jsonObj.linkList;
+	}
 	return this;
 }

@@ -11,9 +11,11 @@
 	<link rel="stylesheet" href="css/style.css">
 	<script src="javascript/jquery-3.3.1.js"></script>
 	<script src="javascript/jquery.ztree-3.5.37.all.min.js"></script>
+	<script src="javascript/jquery.json-editor.min.js"></script>
 	<script src="javascript/FileSaver.min.js"></script>
 	<script src="javascript/jsgrid.min.js"></script>
 	<script src="javascript/jszip.min.js"></script>
+	
 	<script src="javascript/jquery.cctab-1.0.js"></script>
 	<script src="javascript/jquery.ccwform-1.0.js"></script>
 	<script src="javascript/jquery.wkflow-dsg-1.0.js"></script>

@@ -141,11 +141,12 @@
 	width: 30%;
     float: right;
     background-color: #eee;
+    margin-top: -26.5px;
 }
 .designAreaRightTop {
 	width:100%;
 	height:50%;
-	margin-top: -26.5px;
+	
 }
 .designAreaRightDown {
 	width:100%;
@@ -156,6 +157,8 @@
 	border-width:1px;
 	border-color:#F0F0F0;
 	border-style:solid;
+	height:100%;
+	overflow: scroll;
 }
 .wkflwInfoZTree:hover{
 	background-color: #E1E1E1;

@@ -35,6 +35,8 @@ function appStart() {
 				this.initTabSection();
 				$('#createWorkflowImg').on('click',jQuery.proxy(this,'newFile',this));
 				$('#downloadImg').on('click',jQuery.proxy(this,'downloadBPMN',this));
+				$('#runImg').on('click',jQuery.proxy(this,'runWorkflow',this));
+				
 				var displayAreaInfo = this.getDisplayInfo();
 				return this;
 			},
@@ -44,6 +46,7 @@ function appStart() {
 						"<tr>" + 
 							"<td class='funcIcon'><img id='createWorkflowImg' class='imgIcon', src='images/create1.png' title='Create New Workflow'></td>" +
 							"<td class='funcIcon'><img id='downloadImg' class='imgIcon', src='images/download.png' title='Download BPMN and Settings'></td>" +
+							"<td class='funcIcon'><img id='runImg' class='imgIcon', src='images/run.png' title='Run the Workflow'></td>" +
 						"</tr>" + 
 					"</table>";
 				$('#toolbarDiv').append(funIcon);
@@ -257,6 +260,7 @@ function appStart() {
 				console.debug(taskSettings);	
 				workflowDefinitionData.updateTaskList(taskSettings);
 				workflowDefinitionData.updateLinkList(taskSettings);
+				_theAppContext.updateWorkflowToLocalStorage(theActiveTabInfo.currentTabId);
 				/*
 				var search = {	"templateData": {	"workflowKey":"WKFLW000001",
 	 				  								"workflowId":"dynamicStartEndProcess",
@@ -281,9 +285,42 @@ function appStart() {
 				console.debug("downloadBPMNDone");
 				console.debug(obj);
 				var zip = new JSZip();
-				zip.file(obj.bpmnXmlFileName, obj.bpmnXmlContent);
+				zip.file(obj.Response.bpmnXmlFileName, obj.Response.bpmnXmlContent);
+				zip.file(obj.Response.sqlFileName, obj.Response.sqlContent);
 				var blob = zip.generate({type:"blob"});
-				saveAs(blob, "hello.zip");
+				saveAs(blob, obj.Response.workflowName + ".zip");
+			},
+			runWorkflow:function(obj) {
+				console.debug(obj);
+				console.debug("Hi,Let's run the workflow");
+				var theActiveTabInfo = $('#' + designAreaForTabs).ccwtab('getActiveTab',{});
+				console.debug(theActiveTabInfo);
+				var workflowDefinitionData= workflowDefinitionMap[theActiveTabInfo.currentTabId];
+				console.debug(workflowDefinitionData);
+				if (workflowDefinitionData.templateEntities != null && workflowDefinitionData.templateEntities.length > 0) {
+					//for(var i=0;i<workflowDefinitionData.templateEntities.length;i++){
+					//	console.debug(workflowDefinitionData.templateEntities[i].category + "-" + workflowDefinitionData.templateEntities[i].name);
+					//}
+					_theAppContext.showWorkflowGlobalParameterTestValueInputForm(workflowDefinitionData,_theAppContext.getInputWorkflowTestData);
+				}
+			},
+			getInputWorkflowTestData:function(workflowKey,data){
+				console.debug(workflowKey);
+				console.debug(data);
+				var workflowDefinitionData= workflowDefinitionMap[workflowKey];
+				console.debug(workflowDefinitionData);
+				var inputTestData = {};
+			    if (workflowDefinitionData.templateEntities != null && workflowDefinitionData.templateEntities.length > 0) {
+					for(var i=0;i<workflowDefinitionData.templateEntities.length;i++){
+						var tmpKey = "input_" + workflowDefinitionData.templateEntities[i].name;
+						var tmpValue = "";
+						if(tmpKey in data.dialogInputData) {
+							tmpValue = data.dialogInputData[tmpKey];
+						}
+						inputTestData[workflowDefinitionData.templateEntities[i].name]=tmpValue;
+					}
+				}
+				console.debug(inputTestData);
 			},
 			tabCreateDone : function (e,data) {
 				console.debug(e);
@@ -321,6 +358,28 @@ function appStart() {
 			},
 			closeTabEventHandler : function () {
 				console.debug("tab closed");
+			},
+			showWorkflowGlobalParameterTestValueInputForm : function (workflowDefinitionData,callback) {
+				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
+				var inputSrc = 	"<table class='form_table'>" ;
+				for(var i=0;i<workflowDefinitionData.templateEntities.length;i++){
+					inputSrc += "<tr>" ;
+					inputSrc += 	"<td><label id='lbl_" + workflowDefinitionData.templateEntities[i].name + "' class='form_label'>" + workflowDefinitionData.templateEntities[i].name + "</label></td>" + 
+                					"<td><input id='input_" + workflowDefinitionData.templateEntities[i].name + "' type='text' value='' class='textbox_M'></td>" ;
+					inputSrc += "</tr>";
+				}
+				inputSrc += "</table>";
+				$('body').append(wkflwInfoModifyDialog);
+				$('#modelInclude').ccwform('init',{
+					inputSrc:inputSrc,
+					dialogHeader:"輸入Workflow執行測試資料",
+					hasGrid:false,
+					gridSettings:{}
+				});
+				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
+					console.debug(data);
+					callback(workflowDefinitionData.templateData.WKFLW_KEY,data);
+				});
 			},
 			showWorkflowInfoModifyForm : function (workflowDefinitionData,callback) {
 				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
@@ -452,6 +511,12 @@ function appStart() {
 					workflowDefinitionData.templateEntities = data.gridData;
 					_theAppContext.updateWorkflowToLocalStorage(data.wkflw_key);
 				}
+			},
+			updateWorkflowConsole:function(data) {
+				var dsgAreaId = data.Response.workflowKey + "_DesignArea";
+				console.debug(dsgAreaId);
+				$('#' + dsgAreaId).wkflowdsg('updateConsole',{data:data});
+					
 			}
 	}
 	return theAppObj.init();

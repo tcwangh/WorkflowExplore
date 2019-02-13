@@ -134,13 +134,16 @@
 					triggerTabChangeEvent:'false',
 					contentsContainerClass:'tabContentsContainer'
 				});
-				
+								
 				var wkflowInfoTab = theNewTabId+"_WKFLOWINFO";
 				$('#' + designAreaRightTopTabSectionId).ccwtab('addtab',{
 					newTabId:wkflowInfoTab,
 					displayName:'Workflow Data',
 					closeTab:'disabled'
 				});
+				
+				
+				
 				//The workflow-info container div is tab_{wkflowInfoTab}
 				//append ztree div to workflow-info container
 				var wkflowInfoContainerDivId = "tab_"+ wkflowInfoTab;
@@ -188,6 +191,66 @@
 								ztreeDivId:wkflowInfoZtreeDivId}]);
 					
 				});
+				
+				var designAreaRightDownTabSectionId = 'dsgRDContainer_'+theNewTabId;
+				var designAreaRightDownTabUlId = 'dsgRD_controls_'+ theNewTabId;
+				var designAreaRightDownTabContainerId = 'dsgRD_container_' + theNewTabId;
+				var dispDownTabs = 
+					"<section id='" + designAreaRightDownTabSectionId + "' class='tabContainer'>" + 
+						"<ul id='" + designAreaRightDownTabUlId + "' class='tabControls'>" + 
+						"</ul>" +
+						"<div id='" + designAreaRightDownTabContainerId + "' class='tabContentsContainer'>" +
+						"</div>"
+					"</section>";
+				$('#' + otherInfoDiv).append(dispDownTabs);
+				var tabContentPaddingSize = 5;
+				
+				$('#'+designAreaRightDownTabSectionId).ccwtab('init',{
+					padding:tabContentPaddingSize,
+					borderWidth:1,
+					triggerTabCreateAfterEvent:'false',
+					triggerTabChangeEvent:'false',
+					contentsContainerClass:'tabContentsContainer'
+				});
+								
+				var wkflowConsoleTab = theNewTabId+"_CONSOLE";
+				$('#' + designAreaRightDownTabSectionId).ccwtab('addtab',{
+					newTabId:wkflowConsoleTab,
+					displayName:'Console',
+					closeTab:'disabled'
+				});
+				var wkflowConsoleContainerDivId = "tab_"+ wkflowConsoleTab;
+				var wkflowConsoleDivId = "jsonview_" + wkflowConsoleTab;
+				var wkflowConsoleDisplayDivId = "display_" + wkflowConsoleTab;
+				var wkflowConsoleDivSettings = {
+						"wkflowConsoleContainerDivId":wkflowConsoleContainerDivId,
+						"wkflowConsoleDivId":wkflowConsoleDivId,
+						"wkflowConsoleDisplayDivId":wkflowConsoleDisplayDivId
+				};
+				var consoleDiv="<div id='" +wkflowConsoleDivId + "'>" + 
+									"<pre id='" + wkflowConsoleDisplayDivId + "'></pre>" + 
+								"</div>";
+
+				var _setting = $.extend(defaults,options,wkflowConsoleDivSettings);
+				$(this).data(wkflowdsg_defaults.componentSettings,_setting);
+				console.debug(_setting);
+				$('#' + wkflowConsoleContainerDivId).append(consoleDiv);
+				//https://www.jqueryscript.net/other/Beautiful-JSON-Viewer-Editor.html
+			},
+			updateConsole:function(options) {
+				console.debug("updateConsole");
+				console.debug(options);
+				var _setting = $(this).data(wkflowdsg_defaults.componentSettings);
+				console.debug(_setting);
+				var wkflowConsoleDisplayDivId = _setting.wkflowConsoleDisplayDivId;
+				var wkflowConsoleDivId = _setting.wkflowConsoleDivId;
+				if($("#" + wkflowConsoleDisplayDivId).length > 0) {
+						$("#" + wkflowConsoleDisplayDivId).remove();
+				}
+				var displayArea = "<pre id='" + wkflowConsoleDisplayDivId + "'></pre>";
+				$('#' + wkflowConsoleDivId).append(displayArea);
+				$('#' + wkflowConsoleDisplayDivId).addClass("consoleDisplay");
+				var editor = new JsonEditor("#" + wkflowConsoleDisplayDivId, options.data);
 			},
 			updateWorkflowInfo:function(options){
 				console.debug("updateWorkflowInfo");

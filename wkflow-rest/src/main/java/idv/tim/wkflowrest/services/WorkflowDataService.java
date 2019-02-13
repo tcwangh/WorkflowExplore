@@ -12,12 +12,10 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import idv.tim.wkflowrest.model.BPMNDeployStatus;
 import idv.tim.wkflowrest.model.InstanceCreateResult;
 import idv.tim.wkflowrest.model.WorkflowCreateResult;
@@ -33,7 +31,7 @@ import idv.tim.wkflowrest.persistence.entity.WorkflowTemplateEntyId;
 @Service
 public class WorkflowDataService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(WorkflowDataService.class);
+	private static final Logger logger = Logger.getLogger(WorkflowDataService.class);
 	private static final String WKFLW_TEMP_ENTYNAME_ACT_PARM_NAME = "ACT_PARM_NAME";
 	
 	@Autowired
@@ -44,7 +42,7 @@ public class WorkflowDataService {
 	private BpmnGenerator bpmnGenerator;
 	
 	@Transactional
-	public WorkflowDeployResult deployWorkflow(WorkflowDefinition theWorkflowDefinition,BpmnModel theModel) {
+	public WorkflowDeployResult deployWorkflow(WorkflowDefinition theWorkflowDefinition,BpmnModel theModel,String sql) {
 		ProcessEngine theEngine = ProcessEngines.getDefaultProcessEngine();
 		RepositoryService repositoryService = theEngine.getRepositoryService();
 		String deploymentId = repositoryService.createDeployment().name(theWorkflowDefinition.getTemplateData().getWorkflowCategory())
@@ -52,6 +50,9 @@ public class WorkflowDataService {
 		WorkflowDeployResult theResult = new WorkflowDeployResult();
 		theResult.setActivitiDeploymentId(deploymentId);
 		logger.info("Deployment id " + deploymentId);
+		ArrayList<String> deployedSqls = theWorkflowTemplateRepository.saveTemplate(theWorkflowDefinition.getTemplateData().getWorkflowKey(),sql);
+		logger.info("sqlDeployResult is " + deployedSqls.size());
+		theResult.setDeployedSQLs(deployedSqls);
 		return theResult;
 	}
 	

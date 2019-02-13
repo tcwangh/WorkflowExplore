@@ -22,7 +22,9 @@ import idv.tim.wkflowrest.model.WorkflowDefinition;
 import idv.tim.wkflowrest.model.WorkflowDeployResult;
 import idv.tim.wkflowrest.model.WorkflowModelReq;
 import idv.tim.wkflowrest.model.WorkflowModelRes;
+import idv.tim.wkflowrest.model.WorkflowTestInstanceReq;
 import idv.tim.wkflowrest.services.BpmnGenerator;
+import idv.tim.wkflowrest.services.SqlGenerator;
 import idv.tim.wkflowrest.services.WorkflowDataService;
 
 @RestController
@@ -77,17 +79,31 @@ public class WkflowController {
 		logger.info("theBpmnModel XML File Name is " + bpmnXmlFilename);
 		logger.info("theBpmnModel XML Content is " + bpmnXmlContent);
 		WorkflowModelRes theResult = new WorkflowModelRes();
+		SqlGenerator theSQLGenerator = new SqlGenerator();
+		String sqlContent = theSQLGenerator.createSql(req.getWorkflowDefinition());
+		String sqlFileName = req.getWorkflowDefinition().getTemplateData().getWorkflowName() + ".sql" ;
+		logger.info("the SQL File Name is " + sqlFileName);
+		logger.info("the SQL Content is " + "\n");
+		logger.info(sqlContent);
+		theResult.setWorkflowKey(req.getWorkflowDefinition().getTemplateData().getWorkflowKey());
+		theResult.setWorkflowName(req.getWorkflowDefinition().getTemplateData().getWorkflowName());
 		theResult.setBpmnXmlContent(bpmnXmlContent);
 		theResult.setBpmnXmlFileName(bpmnXmlFilename);
+		theResult.setSqlContent(sqlContent);
+		theResult.setSqlFileName(sqlFileName);
 		if ("Y".equals(req.getAutoDeployment())) {
-			WorkflowDeployResult theDeployResult = theWorkflowDataService.deployWorkflow(req.getWorkflowDefinition(), theBpmnModel);
+			WorkflowDeployResult theDeployResult = theWorkflowDataService.deployWorkflow(req.getWorkflowDefinition(), theBpmnModel,sqlContent);
 			theResult.setAutoDeployment(req.getAutoDeployment());
 			theResult.setTheDeployResult(theDeployResult);
 		}else {
 			theResult.setAutoDeployment("N");
 		}
-		
 		return theResult;
+	}
+	
+	@RequestMapping(value = "/workflow-test-instance", method = RequestMethod.POST)
+	public WorkflowModelRes newWorkflowTestInstance(@RequestBody WorkflowTestInstanceReq req,Locale locale,Model model) {
+		
 	}
 
 }
