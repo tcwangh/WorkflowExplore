@@ -29,6 +29,7 @@ function appStart() {
         { Name: "ACT_PARM_NAME", Id: 0 },
         { Name: "PARM_NAME", Id: 1 }
     ];
+	var theCodeMirrorObj = null; //only used in model form, will not have multi
 	var theAppObj = {
 			init: function() {
 				this.initFuncIcons();
@@ -155,7 +156,14 @@ function appStart() {
 				$('#' + dsgAreaId).bind('wkflowdsg.wkflowParameterClick',function(e,data){
 					console.debug(e);
 					console.debug(data);
-					_theAppContext.showWorkflowGlobalParameterForm(data.wkflw_key,_theAppContext.updateWorkflowGlobalParameters);
+					if (data.parm_type=="workflow"){
+						_theAppContext.showWorkflowGlobalParameterForm(data.wkflw_key,_theAppContext.updateWorkflowGlobalParameters);
+					}else {
+						console.debug("ChangeTaskSettings-"+ data.wkflw_key);
+						var workflowDefinitionData= workflowDefinitionMap[data.wkflw_key];
+						_theAppContext.showTaskParamModifyForm(workflowDefinitionData,data,_theAppContext.updateTaskSettings)
+					}
+					
 				});
 			},
 			newFile : function (obj) {
@@ -359,6 +367,7 @@ function appStart() {
 			closeTabEventHandler : function () {
 				console.debug("tab closed");
 			},
+			
 			showWorkflowGlobalParameterTestValueInputForm : function (workflowDefinitionData,callback) {
 				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
 				var inputSrc = 	"<table class='form_table'>" ;
@@ -374,12 +383,86 @@ function appStart() {
 					inputSrc:inputSrc,
 					dialogHeader:"輸入Workflow執行測試資料",
 					hasGrid:false,
-					gridSettings:{}
+					gridSettings:{},
+					eventBinder:null
 				});
 				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
 					console.debug(data);
 					callback(workflowDefinitionData.templateData.WKFLW_KEY,data);
 				});
+			},
+			showTaskParamModifyForm : function (workflowDefinitionData,taskData,callback) {
+				var taskParmModifyDialog = "<section id='modelInclude'></section>";
+				var inputSrc = 	"<div class='task_comm_setting'>" +
+									"<table class='form_table'>" + 
+				 						"<tr>" +
+				 							"<td><label id='lbl_taskType' class='form_label'>任務類型</label></td>" + 
+				 							"<td>" +
+				 							"    <select id='input_taskType'>" +
+				 							"      <option value='service'>Service Task</option>" +
+				 							"      <option value='script'>Script Task</option>" +
+				 							"    </select>" +
+				 							"</td>" +
+				 						"</tr>" + 
+				 					"</table>" +
+				 				"</div>" + 
+				 				"<div id='task_service_setting_div' class='task_service_setting'>Service</div>" + 
+				 				"<div id='task_script_setting_div' class='task_script_setting'>" +
+				 					"<textarea id='code' name='code'>" +
+				 					"//this block allow you to define function&#13;" +
+				 					"//please define your function in javascript.&#13;" +
+				 					"//Hot keys: &#13;" +
+				 					"//CTRL-ALT:Autocomplete"+
+				 					"</textarea>" +
+				 				"</div>";
+				$('body').append(taskParmModifyDialog);
+				
+				
+				$('#modelInclude').ccwform('init',{
+					inputSrc:inputSrc,
+					dialogHeader:"設定流程任務",
+					hasGrid:false,
+					width:"600px",
+					height:"500px",
+					gridSettings:{},
+					eventBinder:_theAppContext.bindEventTaskParamModifyForm
+				});
+				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
+					console.debug(data);
+					callback(workflowDefinitionData.templateData.WKFLW_KEY,data);
+				});
+			},
+			bindEventTaskParamModifyForm : function(){
+				//Default show service task div
+				$("#input_taskType").val("service");
+				var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+				        lineNumbers: true,
+				        matchBrackets: true,
+				        extraKeys: {"Ctrl-Alt": "autocomplete"},
+				        //mode: "text/typescript",
+				        mode: {name: "javascript", globalVars: true},
+				        autoRefresh:true,
+				        autofocus: true
+				});
+				_theAppContext.theCodeMirrorObj = editor;
+				console.debug(_theAppContext.theCodeMirrorObj.lineCount());
+				$("#task_script_setting_div").hide();
+				$("#task_service_setting_div").show();
+				$('#input_taskType').change(function() {
+					if (this.value == "script") {
+						$("#task_script_setting_div").show(20);
+						$("#task_service_setting_div").hide(20);
+						//console.debug(_theAppContext.theCodeMirrorObj.lineCount());
+						_theAppContext.theCodeMirrorObj.focus();
+						_theAppContext.theCodeMirrorObj.setCursor(_theAppContext.theCodeMirrorObj.lineCount(), 0);
+						_theAppContext.theCodeMirrorObj.refresh();
+					}else {
+						$("#task_script_setting_div").hide(20);
+						$("#task_service_setting_div").show(20);
+					}
+					console.debug(this.value);
+				});
+				
 			},
 			showWorkflowInfoModifyForm : function (workflowDefinitionData,callback) {
 				var wkflwInfoModifyDialog = "<section id='modelInclude'></section>";
@@ -435,7 +518,8 @@ function appStart() {
 					inputSrc:inputSrc,
 					dialogHeader:"設定樣板資訊",
 					hasGrid:false,
-					gridSettings:{}
+					gridSettings:{},
+					eventBinder:null
 				});
 				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
 					console.debug(data);
@@ -496,7 +580,8 @@ function appStart() {
 					dialogHeader:"Setup Workflow Global Parameters",
 					hasGrid:true,
 					width:"750px",
-					gridSettings:gridSettings
+					gridSettings:gridSettings,
+					eventBinder:null
 				});
 				$('#modelInclude').bind('ccwform.afterSubmit',function(e,data){
 					console.debug(data);
@@ -517,6 +602,9 @@ function appStart() {
 				console.debug(dsgAreaId);
 				$('#' + dsgAreaId).wkflowdsg('updateConsole',{data:data});
 					
+			},
+			updateTaskSettings:function(data){
+				console.debug(data);
 			}
 	}
 	return theAppObj.init();

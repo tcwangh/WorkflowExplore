@@ -12,6 +12,7 @@
 			wkflowInfoChangeReqEvent:'wkflowdsg.wkflowInfoChangeReq',
 			wkflowInfoChangeDoneEvent:'wkflowdsg.wkflowInfoChangeDone',
 			wkflowParameterClickEvent:'wkflowdsg.wkflowParameterClick',
+			taskParameterClickEvent:'wkflowdsg.taskParameterClick',
 			componentSettings:'wkflowdsg_settings'
 	};
 	
@@ -27,7 +28,7 @@
 								"       	<table class='icon_table'>" + 
 								"           	<tr>" + 
 								"                   <td class='task-title-table'>Start</td>" +
-								"					<td><img id='setWFParameterImg' class='imgIcon wpIcon', src='images/wp.png' title='Setup Workflow Parameters'></td>" +
+								"					<td><img id='setWFParameterImg' class='imgIcon wpIcon' parm_type='workflow' src='images/wp.png' title='Setup Workflow Parameters'></td>" +
 								"                   <td><img id='expandStart' class='imgIcon expandIcon', src='images/expand.png' title='Show detail'></td>" +
 								"                   <td><img id='collapseStart' class='imgIcon collapseIcon', src='images/collapse.png' title='Collapse the detail'></td>" +
 								"				</tr>" + 
@@ -74,24 +75,35 @@
 					$(this).attr("src","images/wp.png");
 				});
 				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.wkparamEventBinder,'click',function(e) {
+					//console.debug($(this).attr("parm_type"));
+					var parentMainprocDiv = $(this).closest("div[class*='mainproc']");
 					var dsgWorkflowKey = $(this).closest("div[class*='mainproc']").attr('wkflw_key');
 					var dsgSourceDivId = $(this).closest("div[class*='mainproc']").attr('dsgarea');
+					var curMainProcIdx = $(parentMainprocDiv).index('.mainproc');
+					var parmType = $(this).attr("parm_type");
+					//console.debug(curMainProcIdx);
 					$('#' + dsgSourceDivId).trigger(wkflowdsg_defaults.wkflowParameterClickEvent,
-							[{wkflw_key:dsgWorkflowKey}]);
+							[{wkflw_key:dsgWorkflowKey,
+							  parm_type:parmType,
+							  mainproc_index:curMainProcIdx}]);
 				});
 				$(this).find("div[id='" + options.configDivId + "']").delegate(wkflowdsg_defaults.addTaskEventBinder,'click',function(e) {
 					console.debug(e);
 					console.debug("Add Task Event fired!");
 					var parentMainprocDiv = $(this).closest("div[class*='mainproc']");
-					console.debug(parentMainprocDiv);
-					var newTask = 	"<div class='mainproc'>" +
+					//var n = $(parentMainprocDiv).index('.mainproc');
+					//console.debug(n);
+					//console.debug(parentMainprocDiv);
+					var dsgWorkflowKey = $(this).closest("div[class*='mainproc']").attr('wkflw_key');
+					var dsgSourceDivId = $(this).closest("div[class*='mainproc']").attr('dsgarea');
+					var newTask = 	"<div class='mainproc'  wkflw_key='" + dsgWorkflowKey + "' dsgarea='" + dsgSourceDivId + "'>" +
 									"	<div class='mainproc-pic'><img class='flowIcon', src='images/task2.png' title='task'></div>" +
 									"	<div class='task'>" +
 									"		<div class='task-title'>" +
 									"       	<table class='icon_table'>" + 
 									"           	<tr>" + 
 									"                   <td class='task-title-table'>Task</td>" +
-									"					<td class='funcIcon'><img id='setWFParameterImg' class='imgIcon', src='images/parameters3.png' title='Setup Workflow Parameters'></td>" +
+									"					<td class='funcIcon'><img id='setTaskParameterImg' class='imgIcon wpIcon' parm_type='task' src='images/wp.png' title='Setup Task Parameters'></td>" +
 									"                   <td><img id='expandStart' class='imgIcon expandIcon', src='images/expand.png' title='Show detail'></td>" +
 									"                   <td><img id='collapseStart' class='imgIcon collapseIcon', src='images/collapse.png' title='Collapse the detail'></td>" +
 									"				</tr>" + 
@@ -100,7 +112,7 @@
 									"       <div class='task-detail'></div>" +
 									"	</div>" +
 									"</div>"+
-									"<div class='mainproc'>" +
+									"<div class='mainproc' wkflw_key='" + dsgWorkflowKey + "' dsgarea='" + dsgSourceDivId + "'>" +
 									"	<div class='taskctl'>" +
 									"       <img id='addTaskImg' class='addTaskIcon' src='images/add-task-icon.png' title='Add task' />" +
 									"   </div>" +

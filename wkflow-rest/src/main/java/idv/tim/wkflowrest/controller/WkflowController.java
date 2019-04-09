@@ -101,9 +101,9 @@ public class WkflowController {
 		return theResult;
 	}
 	
-	@RequestMapping(value = "/workflow-test-instance", method = RequestMethod.POST)
-	public WorkflowModelRes newWorkflowTestInstance(@RequestBody WorkflowTestInstanceReq req,Locale locale,Model model) {
+	//@RequestMapping(value = "/workflow-test-instance", method = RequestMethod.POST)
+	//public WorkflowModelRes newWorkflowTestInstance(@RequestBody WorkflowTestInstanceReq req,Locale locale,Model model) {
 		
-	}
+	//}
 
 }

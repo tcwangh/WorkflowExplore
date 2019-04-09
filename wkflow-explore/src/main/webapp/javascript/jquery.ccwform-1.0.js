@@ -31,22 +31,34 @@
 				$('body').append(theForm);
 				if (_setting.hasGrid == true) {
 					$("#jsGrid").jsGrid(_setting.gridSettings);
-					
-					if (_setting.width!="undefined"){
-						$('#mdWindow').width(_setting.width);
-						var mdWidth = $('#mdWindow').width();
-						console.debug("mdWidth:" + mdWidth);
-						var mdMarginLeft = (mdWidth/2 * -1) + "px";
-						$("#mdWindow").css("margin-left", mdMarginLeft );
-					}
 				}
-				
-				
+				//if (_setting.width!="undefined"){
+				//	$('#mdWindow').width(_setting.width);
+				//	var mdWidth = $('#mdWindow').width();
+				//	console.debug("mdWidth:" + mdWidth);
+				//	var mdMarginLeft = (mdWidth/2 * -1) + "px";
+				//	$("#mdWindow").css("margin-left", mdMarginLeft );
+				//}
+				console.debug(_setting);
+				if (_setting.eventBinder!=undefined && _setting.eventBinder !=null) {
+					_setting.eventBinder();
+				}
+				var mdWidth = $('#mdWindow').width();
+				if (options.width!="undefined"){
+					$('#mdWindow').width(options.width);
+					mdWidth = $('#mdWindow').width();
+				}
 				var mdHeight = $('#mdWindow').height();
+				if (options.height!=undefined){
+					mdHeight = options.height;
+				}
 				console.debug("mdHeight:" + mdHeight);
+				console.debug("mdWidth:" + mdWidth);
 				var mdMarginTop = (mdHeight/2 * -1) + "px";
+				var mdMarginLeft = (mdWidth/2 * -1) + "px";
 				console.debug("mdMarginTop:" + mdMarginTop);
 				$("#mdWindow").css("margin-top", mdMarginTop );
+				$("#mdWindow").css("margin-left", mdMarginLeft );
 				$('#mdOverlay, #mdWindow').css({display:'block',opacity:'0'});
 				$('#mdOverlay').css({height:wdHeight}).stop().
 					animate({opacity:_setting.overlayOpacity},_setting.fadeTime);
@@ -77,6 +89,13 @@
 			        for(var i = 0; i < textAreaList.length; i++) {
 			        	console.log("loop["+ i+ "]", textAreaList[i].id + "-"+ textAreaList[i].value)
 			        	inputData[textAreaList[i].id]=textAreaList[i].value;
+			        }
+			        var selectList = $('#contWrap').find('select');
+			        for(var i = 0; i < selectList.length; i++) {
+			        	console.debug(selectList[i]);
+			        	console.debug(selectList[i].id);
+			        	
+			        	console.debug($("#"+selectList[i].id).val());
 			        }
 			        var hasGrid = $(this).attr('hasGrid');
 			        var wkflw_key = $('#modelInclude').attr('wkflw_key');;
